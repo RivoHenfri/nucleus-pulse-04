@@ -66,7 +66,7 @@ SAMPLE_RATE = 24_000
 # Measured against alloy takes, which land near 15 c/s of *spoken* text
 # once the fixed onset/decay costs below are accounted for.
 # PULSE 04 goes back to PULSE 01's unhurried pace: this one is meant to relax.
-PACE = {"en": 13.5, "id": 16.5}
+PACE = {"en": 16.5, "id": 20.0}
 # Speech is not linear in length: a three-word line still needs an onset, a
 # shaped vowel and a decay. Without this, every short line scores as "padded"
 # and the whole audition loop rejects perfectly good takes.
@@ -529,8 +529,11 @@ def main() -> None:
 
     # Whatever was re-recorded, the set has to end up level with itself: a line
     # recorded on its own is levelled against its own take, and the point is
-    # that all of them are levelled against each other.
-    level_pass()
+    # that all of them are levelled against each other. --no-level is for
+    # parallel workers, which must not rewrite each other's files; run
+    # --level-only once after they have all finished.
+    if "--no-level" not in args:
+        level_pass()
 
     print(f"\ncost this run: ${total_cost:.4f}")
     if failures:
