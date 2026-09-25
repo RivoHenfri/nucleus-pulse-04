@@ -66,7 +66,19 @@ SAMPLE_RATE = 24_000
 # Measured against alloy takes, which land near 15 c/s of *spoken* text
 # once the fixed onset/decay costs below are accounted for.
 # PULSE 04 goes back to PULSE 01's unhurried pace: this one is meant to relax.
-PACE = {"en": 16.5, "id": 20.0}
+#
+# Then the direction was rewritten to forbid the announcer register and ask for
+# ordinary conversation, and English moved out from under this number. Measured
+# across the twenty English takes that run produced: median 20.1 c/s, mean 19.3,
+# against the 16.5 assumed here. Conversation is simply faster than reading, so
+# five lines were rejected as "rushed" at 3.0s against a 4.0s estimate - takes
+# that were right, failed by a ruler that predated the direction. Indonesian
+# measured 21.4 against 20.0, close enough that every Indonesian line passed,
+# which is the control that says this is a pace problem and not a voice one.
+#
+# 19.5 sits just under the English median, so the spread of real takes lands
+# inside the window on both sides rather than hugging one edge.
+PACE = {"en": 19.5, "id": 20.0}
 # Speech is not linear in length: a three-word line still needs an onset, a
 # shaped vowel and a decay. Without this, every short line scores as "padded"
 # and the whole audition loop rejects perfectly good takes.
@@ -397,7 +409,15 @@ def judge(
     # "A I." is four characters and two whole letter-names, and every clean
     # take of it scores as padded. Judge the very short lines on whether they
     # are audible and unbroken, not on their length.
-    slowest = SLOWEST if len(text) >= 8 else 4.0
+    #
+    # The threshold was 8, which left "Things move." at twelve characters being
+    # judged on length after all: a clean two-word read came out at 1.35s
+    # against a 0.93s estimate and scored 0.41. Two words carry an onset, a
+    # shaped vowel and a decay that no per-character rate can model, and the
+    # line does not get longer to amortise them. Sixteen is where the estimate
+    # starts predicting anything, and it is the same threshold the overhead
+    # halving already uses in expected_seconds.
+    slowest = SLOWEST if len(text) >= 16 else 4.0
     if ratio > slowest:
         return 0.0, f"padded — {spoken:.1f}s for a {expected:.1f}s line"
     if ratio < FASTEST:

@@ -201,6 +201,178 @@ export const stopAir = (): void => {
   }
 };
 
+// ---------------------------------------------------------------------------
+// THE DRIVE — the only place in PULSE 04 with a beat.
+// ---------------------------------------------------------------------------
+//
+// Everything else in this Pulse is built to slow a room down: a bed that
+// breathes six times a minute, narration with silence left around it, scenes
+// that are allowed to sit. A four-on-the-floor kick under any of that would be
+// working against the whole design, and under the line "Human judgment." it
+// would be working against it audibly.
+//
+// The spin is the exception, and the reason is that it is the one moment the
+// participant is not being asked to reflect. They have pressed a button and
+// are watching a wheel decide something. That is where energy belongs, it
+// lasts between two and three seconds, and nobody is speaking over it.
+//
+// So the shape is the EDM idiom, compressed into the length of a spin:
+//
+//   * A kick on every beat at 124 BPM, steady, the floor under it all.
+//   * Hats on the off-beats, following the wheel's speed — busiest while it is
+//     flying, thinning out as it slows, so the rhythm decays with the motion.
+//   * A riser that does the opposite: it grows as the wheel SLOWS. That is the
+//     trick the idiom turns on — tension is built by the thing arriving, not
+//     by the thing leaving, so the riser peaks exactly as the wheel is about
+//     to land.
+//   * The drop is the landing itself. Everything cuts, and what is left is the
+//     singing bowl that was always there.
+//
+// It is deliberately quiet enough that the per-letter plucks still read
+// through it, because those are what tell you the wheel is passing letters.
+
+/** Beats per minute. The spin lasts two to three seconds — five or six beats. */
+const DRIVE_BPM = 124;
+
+interface Drive {
+  master: GainNode;
+  hats: GainNode;
+  riser: { gain: GainNode; osc: OscillatorNode };
+  nodes: AudioScheduledSourceNode[];
+}
+
+let drive: Drive | null = null;
+
+/** One kick: a pitch drop into the floor, with a click on top of it. */
+const kick = (ac: AudioContext, at: number, into: AudioNode): AudioScheduledSourceNode[] => {
+  const osc = ac.createOscillator();
+  const gain = ac.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(130, at);
+  osc.frequency.exponentialRampToValueAtTime(42, at + 0.09);
+  gain.gain.setValueAtTime(0.0001, at);
+  gain.gain.exponentialRampToValueAtTime(0.5, at + 0.006);
+  gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.26);
+  osc.connect(gain);
+  gain.connect(into);
+  osc.start(at);
+  osc.stop(at + 0.3);
+  return [osc];
+};
+
+/** One hat: a very short band of noise. */
+const hat = (ac: AudioContext, at: number, into: AudioNode): AudioScheduledSourceNode[] => {
+  const src = ac.createBufferSource();
+  src.buffer = noise(ac);
+  const hp = ac.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = 7200;
+  const gain = ac.createGain();
+  gain.gain.setValueAtTime(0.0001, at);
+  gain.gain.exponentialRampToValueAtTime(0.16, at + 0.004);
+  gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.055);
+  src.connect(hp);
+  hp.connect(gain);
+  gain.connect(into);
+  src.start(at);
+  src.stop(at + 0.08);
+  return [src];
+};
+
+export const startDrive = (): void => {
+  if (drive || muted) return;
+  const ac = ctx();
+  if (!ac) return;
+  try {
+    const master = ac.createGain();
+    master.gain.value = 0.34;
+    master.connect(wheelBus(ac));
+
+    const hats = ac.createGain();
+    hats.gain.value = 0.6;
+    hats.connect(master);
+
+    // The riser, silent until the wheel starts slowing.
+    const osc = ac.createOscillator();
+    const riserGain = ac.createGain();
+    const bp = ac.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 900;
+    bp.Q.value = 1.4;
+    osc.type = 'sawtooth';
+    osc.frequency.value = 180;
+    riserGain.gain.value = 0.0001;
+    osc.connect(bp);
+    bp.connect(riserGain);
+    riserGain.connect(master);
+    osc.start();
+
+    // Scheduled ahead of time so the pattern is sample-accurate rather than
+    // at the mercy of the animation frame. A spin never outlives eight beats.
+    const beat = 60 / DRIVE_BPM;
+    const t0 = ac.currentTime + 0.02;
+    const nodes: AudioScheduledSourceNode[] = [osc];
+    for (let n = 0; n < 8; n++) {
+      nodes.push(...kick(ac, t0 + n * beat, master));
+      nodes.push(...hat(ac, t0 + (n + 0.5) * beat, hats));
+    }
+
+    drive = { master, hats, riser: { gain: riserGain, osc }, nodes };
+  } catch {
+    drive = null;
+  }
+};
+
+/** 0 = the wheel has stopped, 1 = as fast as it goes. Same scale as setAir. */
+export const setDrive = (speed: number): void => {
+  const ac = audioContext();
+  if (!drive || !ac) return;
+  const s = Math.max(0, Math.min(1, speed));
+  try {
+    // Hats thin out as the wheel slows...
+    drive.hats.gain.setTargetAtTime(0.15 + s * 0.85, ac.currentTime, 0.1);
+    // ...and the riser comes up to meet the landing.
+    const build = 1 - s;
+    drive.riser.gain.gain.setTargetAtTime(0.0001 + build * build * 0.09, ac.currentTime, 0.15);
+    drive.riser.osc.frequency.setTargetAtTime(180 + build * build * 900, ac.currentTime, 0.2);
+  } catch {
+    // ignore
+  }
+};
+
+/**
+ * The drop. Everything stops at once — a fade here would turn the landing into
+ * a slow dissolve, and the whole point is that the beat is cut off by it.
+ */
+export const stopDrive = (): void => {
+  const d = drive;
+  const ac = audioContext();
+  if (!d) return;
+  drive = null;
+  try {
+    if (ac) {
+      d.master.gain.cancelScheduledValues(ac.currentTime);
+      d.master.gain.setTargetAtTime(0.0001, ac.currentTime, 0.012);
+    }
+    setTimeout(() => {
+      d.nodes.forEach(n => {
+        try {
+          n.stop();
+        } catch {
+          // already stopped, or never started
+        }
+      });
+      try {
+        d.master.disconnect();
+      } catch {
+        // ignore
+      }
+    }, 120);
+  } catch {
+    // ignore
+  }
+};
+
 /**
  * The six letters drawn into the Nucleus. Each letter's note glides down into
  * one open chord under the centre, staggered the way the letters move, then

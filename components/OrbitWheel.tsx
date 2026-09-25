@@ -26,13 +26,37 @@ import { animate, motion, useAnimationFrame, useMotionValue, useTransform } from
 import React, { useEffect, useRef, useState } from 'react';
 import { LETTERS } from '../i18n';
 import type { Letter } from '../types';
-import { LETTER_NOTE, bowl, buzz, pluck, setAir, startAir, stopAir } from '../utils/sound';
+import {
+  LETTER_NOTE,
+  bowl,
+  buzz,
+  pluck,
+  setAir,
+  setDrive,
+  startAir,
+  startDrive,
+  stopAir,
+  stopDrive,
+} from '../utils/sound';
 import NucleusLogo from './NucleusLogo';
 
 let keptAngle = 0;
 
 /** Idle drift, degrees per second. One lap a minute — about a breath's pace per letter. */
 const DRIFT = 6;
+
+/**
+ * How fast the wheel travels, in degrees per second.
+ *
+ * This is the one number that sets the feel of a spin. Raise it and every spin
+ * gets brisker; lower it and the whole wheel becomes more unhurried. It is
+ * deliberately a speed and not a duration, so that changing it does not
+ * reintroduce the problem it was written to fix.
+ *
+ * At 346 deg/s the distances the solver actually produces land between about
+ * 2.1 and 3.1 seconds, which keeps the old average while removing the swing.
+ */
+const SPIN_SPEED = 346;
 
 const reducedMotion = (): boolean => {
   try {
@@ -105,7 +129,9 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
             ease: [0.2, 0.8, 0.3, 1],
           });
         }
-        setAir(Math.abs(angle.getVelocity()) / 900);
+        const v = Math.abs(angle.getVelocity()) / 900;
+        setAir(v);
+        setDrive(v);
       }),
     [angle],
   );
@@ -116,15 +142,22 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
     const i = LETTERS.indexOf(target);
     const from = angle.get();
     const quick = reducedMotion();
-    const turns = quick ? 1 : 2 + Math.floor(Math.random() * 2);
-    // Solve for the resting angle: at least `turns` laps on, and congruent to
-    // the angle that puts letter i under the pointer.
+    // Two laps, not a random two-or-three. The lap count was never something a
+    // participant could perceive on its own; what they perceived was its side
+    // effect, because the duration below was fixed while the distance was not.
+    const turns = quick ? 1 : 2;
+    // Solve for the resting angle: `turns` laps on, and congruent to the angle
+    // that puts letter i under the pointer. The alignment term is whatever it
+    // takes, 0-359 degrees, so the distance still varies from spin to spin.
     let to = from + turns * 360;
-    to += (((-i * 60 - to) % 360) + 360) % 360;
+    to += (((-i * 360) / LETTERS.length - to) % 360 + 360) % 360;
+    const travel = to - from;
 
     spinning.current = true;
     setLandedOn(null);
     startAir();
+    // The beat only exists while the wheel is turning. See THE DRIVE in sound.ts.
+    if (!quick) startDrive();
 
     const run = async () => {
       if (!quick) {
@@ -132,10 +165,17 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
         await animate(angle, from - 14, { duration: 0.3, ease: [0.3, 0, 0.4, 1] });
         if (stopped) return;
       }
-      // Gentle acceleration, then a long settle — under three seconds in all. Overshoots by a few
-      // degrees so the spring has something to pull back.
+      // Gentle acceleration, then a long settle. Overshoots by a few degrees so
+      // the spring has something to pull back.
+      //
+      // The duration follows the distance rather than being fixed, which is the
+      // whole point: a fixed 2.6 s across a distance that ranged from 720 to
+      // about 1440 degrees meant the wheel ran at up to twice the speed on some
+      // spins and the rhythm changed under you. Holding the SPEED steady and
+      // letting the time move a little is the version that feels the same every
+      // time — the clamp keeps it inside a believable window even so.
       await animate(angle, to + 5, {
-        duration: quick ? 1.2 : 2.6,
+        duration: quick ? 1.2 : Math.min(3.2, Math.max(2.1, travel / SPIN_SPEED)),
         ease: [0.42, 0, 0.1, 1],
       });
       if (stopped) return;
@@ -143,6 +183,8 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
       if (stopped) return;
       spinning.current = false;
       stopAir();
+      // The landing is the drop: the beat is cut off by it, not faded under it.
+      stopDrive();
       bowl(LETTER_NOTE[i] / 2);
       // Coming to rest: one firm bump, then two fading after-shakes.
       buzz([30, 70, 16, 110, 10]);
@@ -155,6 +197,7 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
       stopped = true;
       spinning.current = false;
       stopAir();
+      stopDrive();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, target]);
