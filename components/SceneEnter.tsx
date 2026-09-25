@@ -135,10 +135,13 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
               <p className="font-display text-[24px] leading-[1.35] text-[#EDE7DA]">{c.welcome}</p>
             </Beat>
             <Beat show={shown >= 2} className="mt-5">
-              {/* One word, not six letters. Spelled out with separators it reads
-                  as an initialism being dictated; joined, it reads as the name
-                  of the thing the company actually calls its values. */}
-              <p className="text-[19px] font-semibold tracking-[0.34em] text-sky-100/90">
+              {/* One word, not six letters.
+                  Removing the separators was not enough on its own: at 0.34em
+                  the gaps still did the work the dots had been doing, and it
+                  read as O P T I C S rather than as OPTICS. Wide tracking is
+                  how you set an initialism. This is a name, so it is set as
+                  one — just enough tracking to keep it deliberate. */}
+              <p className="text-[21px] font-semibold tracking-[0.08em] text-sky-100/90">
                 {LETTERS.join('')}
               </p>
             </Beat>

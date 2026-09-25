@@ -133,7 +133,10 @@ const SceneSpell: React.FC<Props> = ({ lang, rounds, onContinue }) => {
           the same reason: what is at the centre of the Nucleus is not your
           letter, it is all of them. */}
       <Beat show={shown >= 3} className="mt-6">
-        <p className="text-[15px] font-semibold tracking-[0.42em] text-gray-600">
+        {/* Tighter than it was, for the same reason as the other two: this is
+            the word, not its letters. Enough tracking is kept that the one lit
+            letter can still be picked out of it. */}
+        <p className="text-[17px] font-semibold tracking-[0.16em] text-gray-600">
           {LETTERS.map(l => (
             <span key={l} className={l === letter ? 'text-sky-100' : undefined}>
               {l}
