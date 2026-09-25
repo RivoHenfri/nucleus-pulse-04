@@ -20,6 +20,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { COPY, LANGUAGES, LETTERS, type Lang } from '../i18n';
 import { hush, narrate, setNarrationLang, unlockAudio, whenQuiet } from '../utils/narration';
+import { roomCode } from '../utils/room';
 import { buzz, unlockWebAudio } from '../utils/sound';
 import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
 import NucleusLogo from './NucleusLogo';
@@ -40,6 +41,7 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
   const c = COPY[lang].enter;
   const [lit, setLit] = useState(false);
   const [started, setStarted] = useState(false);
+  const room = roomCode();
   const shown = useBeats(started ? GAPS : []);
 
   useEffect(() => {
@@ -95,6 +97,14 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
             <p className="mb-4 mt-8 px-6 text-[12px] leading-relaxed text-gray-600">
               {COPY[lang].common.soundHint}
             </p>
+
+            {/* The room this phone is in, so whoever holds it can see they
+                scanned the right code. Not a thing to act on. */}
+            {room && (
+              <p className="mx-auto mb-5 w-fit rounded-full border border-white/10 px-3 py-1 text-[10px] tracking-[0.3em] text-gray-500">
+                {room}
+              </p>
+            )}
 
             <div className="flex flex-col items-center gap-3">
               {LANGUAGES.map(l => (

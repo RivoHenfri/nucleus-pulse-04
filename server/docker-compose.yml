@@ -1,0 +1,40 @@
+# The PULSE 04 room, on the VPS — the same shape as PULSE 02's.
+#
+# ONE CONTAINER, AND DELIBERATELY NO CADDY. PULSE 01's stack already owns 80
+# and 443 on this host, so this compose ships the API alone and joins the
+# network PULSE 01's Caddy is on. The route is a small edit to that Caddyfile
+# — see ./Caddyfile here for the block.
+#
+# Never exposed on a host port. The only way in is through the existing Caddy
+# over HTTPS. Its data is its own: a separate volume and SQLite file.
+
+services:
+  # NOT named "api": PULSE 01's service on this shared network already is, and
+  # a second one makes that alias round-robin between Pulses (PULSE 02 learned
+  # this the hard way). Caddy reaches this container by its container_name.
+  api04:
+    build: .
+    container_name: nucleus-04-api
+    restart: unless-stopped
+    # House rule on this box: every container declares a ceiling.
+    mem_limit: 128m
+    environment:
+      PORT: "3000"
+      DB_PATH: /data/nucleus-04.sqlite
+    volumes:
+      - nucleus04-data:/data
+    networks: [nucleus]
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+volumes:
+  nucleus04-data:
+
+networks:
+  # The network PULSE 01's compose project ("nucleus-room") created.
+  nucleus:
+    external: true
+    name: nucleus-room_nucleus

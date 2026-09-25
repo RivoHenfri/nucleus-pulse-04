@@ -24,13 +24,30 @@ human judgment.
 | CALLBACK | SIGNAL / TRUTH / ORBIT / NUCLEUS, then *HUMAN JUDGMENT.* |
 | FINAL | *Find what matters. Decide what moves.* Then it loops back to the opening by itself after 22 s, ready for the next person. |
 
-## Pulse Back instead of a room
+## The room
 
-There is no server, no facilitator dashboard, no live statistics. Each
-participant gets their own Pulse Back at the end and can post it to the
-WhatsApp thread themselves; that is how the facilitator sees what the room
-decided. Nothing leaves the phone otherwise. Session state is `localStorage`,
-so a refresh does not lose a run.
+`dashboard.html` is the facilitator's screen:
+https://rivohenfri.github.io/nucleus-pulse-04/dashboard.html
+
+1. **Open a room** — it shows a code, the participant link (`?room=CODE`)
+   and a QR, and counts phones as they join.
+2. **Where the wheel landed** — how many times each of O · P · T · I · C · S
+   came up.
+3. **What we decided** — for each situation that came up, how many took each
+   of its three choices. One colour, playbook order, nothing marked right.
+4. **So, what does that mean** — the close, and a WhatsApp share of the room.
+
+Arrow keys, space or a clicker move between stages. The screen polls every
+3 s. A phone only posts to a room if it came in through a room link, and it
+posts one letter and one number: no name, no device id. The API has no
+endpoint that returns an individual response. Every participant still gets
+their own Pulse Back with its WhatsApp button.
+
+The API (`server/`) runs on the Nucleus VPS as container `nucleus-04-api`
+(`/home/ubuntu/nucleus-04`), behind PULSE 01's Caddy at
+`https://nucleus-api.rivohenfri.cloud/p4` (`server/Caddyfile.deployed` is the
+live Caddyfile). Redeploy: copy `server/*` there, then
+`docker compose up -d --build`.
 
 ## Sound
 

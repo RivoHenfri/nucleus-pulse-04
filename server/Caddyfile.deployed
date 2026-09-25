@@ -1,0 +1,36 @@
+# TLS from Let's Encrypt, automatically, for the one hostname.
+#
+# Three Pulses answer here now. PULSE 02 sits under /p2 and PULSE 04 under /p4, rather than on their own
+# hostnames because a second name needs a DNS record before Let's Encrypt will
+# issue for it, and one certificate already covers this one. handle_path strips
+# the prefix, so the PULSE 02 container sees /health, /rooms, /responses exactly
+# as it would on a host of its own and its code needs no knowledge of the path.
+nucleus-api.rivohenfri.cloud {
+	log {
+		output stdout
+		format json
+	}
+	encode zstd gzip
+
+	# PULSE 02 — TRUTH
+	handle_path /p2/* {
+		reverse_proxy nucleus-02-api:3000
+	}
+
+	# PULSE 04 — THE WHEEL
+	handle_path /p4/* {
+		reverse_proxy nucleus-04-api:3000
+	}
+
+	# PULSE 01 — SIGNAL. Wrapped in handle so the two are mutually exclusive:
+	# a bare reverse_proxy here would also swallow /p2.
+	handle {
+		reverse_proxy api:3000
+	}
+
+	header {
+		-Server
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+	}
+}

@@ -147,6 +147,43 @@ const EN = {
     shareText: (rows: string[], url: string) =>
       `◉ NUCLEUS · PULSE 04 — my Pulse Back\n\n${rows.join('\n')}\n\nNo right answers. Just the call I made.\n${url}`,
   },
+  spell: {
+    eyebrow: 'ONE LAST THING',
+    title: 'Now cast it.',
+    intro: (value: string) =>
+      `The wheel gave you ${value}. Say what that looks like when you do it — in your own words — and hand the wheel to someone else.`,
+    name: 'Your name',
+    namePlaceholder: 'e.g. Tole',
+    line: (value: string) => `“I cast the spell of ${value} by…”`,
+    linePlaceholder: 'e.g. making the call when the owner is away…',
+    tags: 'Tag your fellow Nucleus (optional)',
+    tagsPlaceholder: 'e.g. Satya, Daniel, Muis',
+    hint: 'Write your line to send it.',
+    share: 'SEND TO THE PULSE THREAD',
+    copy: 'COPY THE MESSAGE',
+    copied: 'COPIED',
+    note: 'The @ names are part of the game — WhatsApp will not notify them for you.',
+    cta: 'CONTINUE',
+    everyone: '@everyone in Nucleus',
+    anon: 'Someone in Nucleus',
+    shareText: (p: {
+      name: string;
+      letter: string;
+      value: string;
+      call: string;
+      line: string;
+      tags: string;
+      url: string;
+    }) =>
+      `◉ NUCLEUS · PULSE 04 — THE WHEEL\n\n` +
+      `The wheel gave me *${p.letter} — ${p.value}*.\n` +
+      `The call I made: “${p.call}”\n\n` +
+      `✨ *${p.name}* casts the spell of ${p.value} by…\n` +
+      `“${p.line}”\n\n` +
+      `🪄 Next to spin the wheel: ${p.tags}\n` +
+      `Find what matters. Decide what moves.\n` +
+      `👉 ${p.url}`,
+  },
   callback: {
     rows: [
       { pulse: 'SIGNAL', q: 'What got my attention?' },
@@ -209,6 +246,43 @@ const ID: Copy = {
     cta: 'LANJUT',
     shareText: (rows: string[], url: string) =>
       `◉ NUCLEUS · PULSE 04 — Pulse Back saya\n\n${rows.join('\n')}\n\nTidak ada jawaban benar. Hanya keputusan yang saya ambil.\n${url}`,
+  },
+  spell: {
+    eyebrow: 'SATU HAL TERAKHIR',
+    title: 'Sekarang ucapkan.',
+    intro: (value: string) =>
+      `Roda memberimu ${value}. Katakan seperti apa bentuknya saat kamu menjalankannya — dengan kalimatmu sendiri — lalu serahkan rodanya ke orang lain.`,
+    name: 'Namamu',
+    namePlaceholder: 'contoh: Tole',
+    line: (value: string) => `“Aku mengucapkan mantra ${value} dengan…”`,
+    linePlaceholder: 'contoh: mengambil keputusan saat pemiliknya tidak ada…',
+    tags: 'Tandai rekan Nucleus-mu (opsional)',
+    tagsPlaceholder: 'contoh: Satya, Daniel, Muis',
+    hint: 'Tulis kalimatmu dulu untuk mengirim.',
+    share: 'KIRIM KE THREAD PULSE',
+    copy: 'SALIN PESANNYA',
+    copied: 'TERSALIN',
+    note: 'Tanda @ adalah bagian dari permainan — WhatsApp tidak akan menotifikasi mereka secara otomatis.',
+    cta: 'LANJUT',
+    everyone: '@semua orang di Nucleus',
+    anon: 'Seseorang di Nucleus',
+    shareText: (p: {
+      name: string;
+      letter: string;
+      value: string;
+      call: string;
+      line: string;
+      tags: string;
+      url: string;
+    }) =>
+      `◉ NUCLEUS · PULSE 04 — THE WHEEL\n\n` +
+      `Roda memberi saya *${p.letter} — ${p.value}*.\n` +
+      `Keputusan yang saya ambil: “${p.call}”\n\n` +
+      `✨ *${p.name}* mengucapkan mantra ${p.value} dengan…\n` +
+      `“${p.line}”\n\n` +
+      `🪄 Giliran memutar roda berikutnya: ${p.tags}\n` +
+      `Temukan yang penting. Putuskan yang bergerak.\n` +
+      `👉 ${p.url}`,
   },
   callback: {
     rows: [

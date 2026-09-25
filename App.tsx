@@ -9,9 +9,11 @@
 // sent their call; whoever stays still gets the reveal.
 //
 // Everything the run remembers lives here and, for a refresh, in
-// localStorage: the language, the scene, and the three rounds — where the
-// wheel landed and what was chosen. No login, no identity, no server. Nothing
-// leaves the phone unless the participant sends their own Pulse Back.
+// localStorage: the language, the scene, and the round — where the wheel
+// landed and what was chosen. No login, no identity. If the phone came in
+// through a facilitator's room link, that one letter and one choice are
+// posted to the room, anonymously; otherwise nothing leaves the phone unless
+// the participant sends their own Pulse Back.
 
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
@@ -19,6 +21,7 @@ import { COPY, type Lang } from './i18n';
 import { ROUNDS, type Round, type SceneId } from './types';
 import { setAmbienceEnabled, startCalmBed, stopCalmBed } from './utils/ambience';
 import { hush, onAudioTrouble, setNarrationEnabled, setNarrationLang } from './utils/narration';
+import { joinRoom, submitToRoom } from './utils/room';
 import { setEffectsEnabled, unlockWebAudio } from './utils/sound';
 import { setVoiceEnabled, silence } from './utils/voice';
 
@@ -105,6 +108,11 @@ const App: React.FC = () => {
     setNarrationLang(lang);
   }, [lang]);
 
+  // If this phone came in through a room link, the room hears it arrived.
+  useEffect(() => {
+    joinRoom();
+  }, []);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [scene]);
@@ -142,6 +150,8 @@ const App: React.FC = () => {
 
   const chosen = (round: Round) => {
     const next = [...rounds, round];
+    // Into the room, if there is one — in the background, never in the way.
+    void submitToRoom({ lang, letter: round.letter, choice: round.choice });
     setRounds(next);
     setAutoSpin(false);
     if (next.length >= ROUNDS) setScene('pulseback');
