@@ -66,6 +66,10 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
   const upright = useTransform(angle, a => -a);
   const lastIndex = useRef(atPointer(keptAngle));
   const spinning = useRef(false);
+  /** The pointer, knocked sideways by each letter going past — the flapper on a real wheel. */
+  const flick = useMotionValue(0);
+  /** The whole wheel, for the small shudder when it comes to rest. */
+  const shake = useMotionValue(0);
   const [landedOn, setLandedOn] = useState<Letter | null>(mode === 'landed' ? target ?? null : null);
 
   const radius = size * 0.4;
@@ -93,7 +97,13 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
           const speed = Math.min(1, Math.abs(angle.getVelocity()) / 900);
           // Quieter when fast, so a run of notes never piles up into noise.
           pluck(LETTER_NOTE[k], 0.02 + (1 - speed) * 0.03);
-          buzz(4);
+          // Felt as well as heard: a light tick while it flies, a firmer one
+          // for each letter as it slows, so the settle is in the hand too.
+          buzz(speed > 0.7 ? 8 : speed > 0.35 ? 14 : 24);
+          animate(flick, [-(9 + (1 - speed) * 17), 0], {
+            duration: 0.12 + (1 - speed) * 0.22,
+            ease: [0.2, 0.8, 0.3, 1],
+          });
         }
         setAir(Math.abs(angle.getVelocity()) / 900);
       }),
@@ -118,6 +128,7 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
 
     const run = async () => {
       if (!quick) {
+        buzz(24);
         await animate(angle, from - 14, { duration: 0.42, ease: [0.3, 0, 0.4, 1] });
         if (stopped) return;
       }
@@ -133,7 +144,9 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
       spinning.current = false;
       stopAir();
       bowl(LETTER_NOTE[i] / 2);
-      buzz([10, 40, 18]);
+      // Coming to rest: one firm bump, then two fading after-shakes.
+      buzz([30, 70, 16, 110, 10]);
+      animate(shake, [0, -4, 4, -2.5, 1.5, -0.5, 0], { duration: 0.6, ease: 'easeOut' });
       setLandedOn(target);
       onLanded?.();
     };
@@ -149,9 +162,9 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
   const collapse = mode === 'collapse';
 
   return (
-    <div
+    <motion.div
       className="relative mx-auto select-none"
-      style={{ width: size, height: size }}
+      style={{ width: size, height: size, x: shake }}
       onClick={() => mode === 'idle' && onTap?.()}
       role={mode === 'idle' ? 'button' : undefined}
       aria-label={mode === 'idle' ? 'Spin' : undefined}
@@ -223,7 +236,12 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
       <motion.div
         aria-hidden
         className="pointer-events-none absolute left-1/2"
-        style={{ top: size / 2 - radius - particle / 2 - 16, x: '-50%' }}
+        style={{
+          top: size / 2 - radius - particle / 2 - 16,
+          x: '-50%',
+          rotate: flick,
+          transformOrigin: '50% 0%',
+        }}
         animate={{ opacity: collapse ? 0 : 1 }}
       >
         <svg width="14" height="10" viewBox="0 0 14 10">
@@ -278,7 +296,7 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
           );
         })}
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 

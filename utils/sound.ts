@@ -266,11 +266,62 @@ export const unlockWebAudio = (): void => {
   }
 };
 
-/** Haptic nudge — silently ignored where unsupported */
-export const buzz = (pattern: number | number[] = 30): void => {
+/**
+ * iPhone has no Vibration API. What it does have, since iOS 18, is a native
+ * haptic on the system switch control: toggling an `<input type="checkbox"
+ * switch>` taps the Taptic Engine. A hidden one, clicked through its label,
+ * is the only way a web page can make an iPhone tick. One tap per call — iOS
+ * has no durations, so a pattern becomes a tap at the start of each pulse.
+ */
+let iosSwitch: HTMLLabelElement | null = null;
+const iosTap = (): void => {
   try {
-    navigator.vibrate?.(pattern);
+    if (!iosSwitch) {
+      const label = document.createElement('label');
+      label.setAttribute('aria-hidden', 'true');
+      label.style.cssText =
+        'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.setAttribute('switch', '');
+      input.tabIndex = -1;
+      label.appendChild(input);
+      document.body.appendChild(label);
+      iosSwitch = label;
+    }
+    iosSwitch.click();
   } catch {
     // ignore
   }
+};
+
+const canVibrate = (): boolean => {
+  try {
+    return typeof navigator.vibrate === 'function' && navigator.vibrate(0) !== false;
+  } catch {
+    return false;
+  }
+};
+let vibrates: boolean | null = null;
+
+/** Haptic nudge — real vibration on Android, the switch tap on iPhone, nothing elsewhere. */
+export const buzz = (pattern: number | number[] = 30): void => {
+  if (vibrates === null) vibrates = canVibrate();
+  if (vibrates) {
+    try {
+      navigator.vibrate(pattern);
+    } catch {
+      // ignore
+    }
+    return;
+  }
+  const pulses = Array.isArray(pattern) ? pattern : [pattern];
+  let at = 0;
+  pulses.forEach((ms, i) => {
+    if (i % 2 === 0) {
+      if (at === 0) iosTap();
+      else setTimeout(iosTap, at);
+    }
+    at += ms;
+  });
 };

@@ -1,15 +1,15 @@
 {
   "voice": "alloy",
-  "note": "Voice: alloy, the same voice as PULSE 02, so the September Pulses sound like one person. PULSE 04 is the lightest of the four, so the direction is slower and warmer than PULSE 02's. The situations are spoken because they are the same for everybody. The three choices and the participant's own Pulse Back are never spoken: a voice reading someone their own decisions back turns a mirror into a report.",
+  "note": "Voice: alloy, the same voice as PULSE 02, so the September Pulses sound like one person. PULSE 04 is the lightest of the four: the direction asks for a relaxed voice with a smile and gentle enthusiasm in it, never tense. The situations are spoken because they are the same for everybody. The three choices and the participant's own Pulse Back are never spoken: a voice reading someone their own decisions back turns a mirror into a report.",
   "direction": {
-    "_": "calm and warm, slightly slower than conversation, like a kind colleague. Plain delivery. Say only the script and stop immediately after its last word; add nothing, continue nothing.",
-    "enter": "calm and plain, a short statement said once. Stop right after the last word.",
-    "wheel": "light and friendly. Stop right after the last word.",
-    "sit": "plain and conversational, describing an ordinary workday moment to a colleague. Neutral: nothing in the tone may hint at which way to decide.",
-    "reveal": "calm and unhurried, noticing something rather than teaching it.",
-    "pulseback": "gentle and brief.",
-    "callback": "even and grounded.",
-    "final": "settled and warm."
+    "_": "warm and relaxed, with a gentle smile and quiet enthusiasm in the voice, like a friendly colleague who is glad you are here. Never tense, never dramatic, never flat. Say only the script and stop immediately after its last word; add nothing, continue nothing.",
+    "enter": "relaxed and bright, a light welcoming lift, a smile in the voice. Stop right after the last word.",
+    "wheel": "playful and encouraging, a smile in the voice. Stop right after the last word.",
+    "sit": "friendly and conversational with light interest, like telling a colleague about a normal workday. Relaxed, not tense. Neutral: nothing in the tone may hint at which way to decide.",
+    "reveal": "relaxed and warm, with a sense of curious discovery. Never preachy.",
+    "pulseback": "warm and appreciative.",
+    "callback": "grounded and warm, quietly confident.",
+    "final": "warm and uplifting, a soft smile."
   },
   "languages": {
     "en": {
