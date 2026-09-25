@@ -19,7 +19,6 @@ human judgment.
 |-------|--------------|
 | OPENING | The Nucleus mark ignites (same as PULSE 02). Language. *Welcome to the NUCLEUS Wheel. O · P · T · I · C · S. Our values.* Then *Things move. Context changes. Decisions still happen.* SPIN. |
 | WHEEL ×1 | O · P · T · I · C · S orbit the Nucleus. Wind-up → accelerate → long settle → snap. The letter picks a situation; three plausible choices; captured silently. |
-| PULSE BACK | Straight after the choice: the call the participant made, quoted and never interpreted, with one button that sends it to the Pulse WhatsApp thread. |
 | REVEAL | The letters fall into the Nucleus, open into the six values, and the orbit comes back as a helix ring. *Repeated choices become behavior. Behavior becomes culture.* |
 | CALLBACK | SIGNAL / TRUTH / ORBIT / NUCLEUS, then *HUMAN JUDGMENT.* |
 | SPELL | The one screen the participant writes on. Name, one line — *I cast the spell of \<value\> by…* — and the names of whoever spins next, turned into a chain message for the WhatsApp thread. The @ names are game tags; a wa.me link cannot make WhatsApp notify anyone, and the screen says so rather than letting people think they tagged a colleague who never heard about it. |
@@ -41,8 +40,8 @@ https://rivohenfri.github.io/nucleus-pulse-04/dashboard.html
 Arrow keys, space or a clicker move between stages. The screen polls every
 3 s. A phone only posts to a room if it came in through a room link, and it
 posts one letter and one number: no name, no device id. The API has no
-endpoint that returns an individual response. Every participant still gets
-their own Pulse Back with its WhatsApp button.
+endpoint that returns an individual response. Every participant can still send
+their own call to the WhatsApp thread from the SPELL screen.
 
 The API (`server/`) runs on the Nucleus VPS as container `nucleus-04-api`
 (`/home/ubuntu/nucleus-04`), behind PULSE 01's Caddy at
@@ -58,11 +57,17 @@ Everything is Web Audio, no files, and deliberately relaxing:
   spin is a soft kalimba run rather than a ratchet. A breath of filtered air
   rises and falls with the wheel's speed. It lands on a singing bowl in that
   letter's key.
-- **Calm bed** (from PULSE 02) — a low drone that swells six times a minute,
-  the slow-breathing rate; the wheel's glow breathes on the same 10 s clock.
+- **Calm bed** — a planet heard from orbit. Filtered noise under a band-pass
+  that drifts across half a minute, a 42 Hz body below it, two partials near
+  the threshold of hearing on unrelated clocks, and the whole thing panning
+  past over forty seconds. It swells six times a minute, the slow-breathing
+  rate; the wheel's glow breathes on the same 10 s clock. It carries no
+  sustained pitch on purpose: the first version was a stack of sines, and on a
+  phone speaker — where nothing below 200 Hz survives — all that reached the
+  room was a steady nasal hum.
 - **Voice** — pre-rendered with `openai/gpt-audio-mini` (voice `alloy`, same
   as PULSE 02), calmer direction. Situations are spoken; a participant's own
-  choices and Pulse Back are never read aloud.
+  choices and their own spell are never read aloud.
 
 ```bash
 bws run -- python narration/generate.py            # only what is missing
@@ -78,7 +83,7 @@ npm run dev      # http://localhost:3004
 npm run build    # dist/, base /nucleus-pulse-04/ for GitHub Pages
 ```
 
-In dev only, `?scene=wheel|reveal|pulseback|callback|spell|final` opens a scene
+In dev only, `?scene=wheel|reveal|callback|spell|final` opens a scene
 with stand-in rounds for re-timing.
 
 ## Tech

@@ -1,16 +1,16 @@
 {
   "voice": "alloy",
-  "note": "Voice: alloy, the same voice as PULSE 02, so the September Pulses sound like one person. PULSE 04 is the lightest of the four: the direction asks for a relaxed voice with a smile and gentle enthusiasm in it, never tense. The situations are spoken because they are the same for everybody. The three choices and the participant's own Pulse Back are never spoken: a voice reading someone their own decisions back turns a mirror into a report.",
+  "note": "Voice: alloy, the same voice as PULSE 02, so the September Pulses sound like one person. PULSE 04 is the lightest of the four: the direction asks for a relaxed voice with a smile and gentle enthusiasm in it, never tense. The situations are spoken because they are the same for everybody. The three choices and the participant's own spell are never spoken: a voice reading someone their own decisions back turns a mirror into a report.",
   "direction": {
     "_": "warm and relaxed, with a gentle smile and quiet enthusiasm in the voice, like a friendly colleague who is glad you are here. Never tense, never dramatic, never flat. Say only the script and stop immediately after its last word; add nothing, continue nothing.",
     "enter": "relaxed and bright, a light welcoming lift, a smile in the voice. Stop right after the last word.",
     "wheel": "playful and encouraging, a smile in the voice. Stop right after the last word.",
     "sit": "friendly and conversational with light interest, like telling a colleague about a normal workday. Relaxed, not tense. Neutral: nothing in the tone may hint at which way to decide.",
     "reveal": "relaxed and warm, with a sense of curious discovery. Never preachy.",
-    "pulseback": "warm and appreciative.",
     "callback": "grounded and warm, quietly confident.",
     "final": "warm and uplifting, a soft smile.",
-    "welcome": "warm and welcoming with a bright smile. Say each of the six letters on its own, calmly. Stop right after the last word."
+    "welcome": "warm and welcoming with a bright smile. Say each of the six letters on its own, calmly. Stop right after the last word.",
+    "spell": "warm and inviting, a soft smile, like handing something over. Unhurried. Stop right after the last word."
   },
   "languages": {
     "en": {
@@ -30,12 +30,12 @@
       "reveal-3": "These aren't answers. They're values.",
       "reveal-4": "Values don't make decisions for us. They shape how we make them.",
       "reveal-5": "Repeated choices become behavior. Behavior becomes culture.",
-      "pulseback": "Here's the call you made.",
       "callback-1": "Information can help. Experience can help. A I can help.",
       "callback-2": "But none of them should replace the thing at the center.",
       "callback-3": "Human judgment.",
       "final-1": "Find what matters. Decide what moves.",
-      "final-2": "Our values. Our culture."
+      "final-2": "Our values. Our culture.",
+      "spell": "Now you can share this."
     },
     "id": {
       "welcome": "Selamat datang di Nucleus Wheel. O. P. T. I. C. S. Nilai-nilai kita.",
@@ -54,12 +54,12 @@
       "reveal-3": "Ini bukan jawaban. Ini nilai.",
       "reveal-4": "Nilai tidak membuat keputusan untuk kita. Nilai membentuk cara kita memutuskan.",
       "reveal-5": "Pilihan yang berulang menjadi perilaku. Perilaku menjadi budaya.",
-      "pulseback": "Ini keputusan yang kamu ambil.",
       "callback-1": "Informasi bisa membantu. Pengalaman bisa membantu. A I bisa membantu.",
       "callback-2": "Tapi tidak satu pun seharusnya menggantikan yang ada di pusatnya.",
       "callback-3": "Penilaian manusia.",
       "final-1": "Temukan yang penting. Putuskan yang bergerak.",
-      "final-2": "Nilai kita. Budaya kita."
+      "final-2": "Nilai kita. Budaya kita.",
+      "spell": "Sekarang kamu bisa membagikannya."
     }
   }
 }

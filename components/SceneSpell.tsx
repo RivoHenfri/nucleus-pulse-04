@@ -19,15 +19,20 @@
 //   - Nothing here is sent by the app. The text is built on the phone and
 //     handed to WhatsApp only when the participant presses the button.
 //
-// No narration: the voice never reads a participant their own words back.
+// One spoken line, and only one. The voice says that the spell can now be
+// shared — it never reads a participant their own words back, because a voice
+// reciting your own sentence to you turns a mirror into a report. It also
+// arrives after the form has landed, not with it, so the first thing on the
+// screen is the invitation rather than an instruction.
 
 import { motion } from 'motion/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { COPY, VALUE, type Lang } from '../i18n';
 import type { Round } from '../types';
+import { hush, narrate } from '../utils/narration';
 import { buzz, tap } from '../utils/sound';
-import { Beat, Continue, Eyebrow, Stage, beats, useBeats } from './atoms';
-import { shareUrl } from './ScenePulseBack';
+import { Beat, Continue, Eyebrow, Stage, beats, cue, useBeats } from './atoms';
+import { shareUrl } from '../utils/share';
 
 interface Props {
   lang: Lang;
@@ -52,6 +57,13 @@ const SceneSpell: React.FC<Props> = ({ lang, rounds, onContinue }) => {
   const [line, setLine] = useState('');
   const [tags, setTags] = useState('');
   const [copied, setCopied] = useState(false);
+
+  // Spoken once the form is on screen, so it reads as an offer rather than a
+  // prompt to start typing.
+  useEffect(() => {
+    narrate('spell', cue(2600));
+    return () => hush();
+  }, []);
 
   // The run is one round, but read it out of the array rather than assuming
   // index 0 exists — a refreshed phone can land here with nothing.

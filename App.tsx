@@ -2,18 +2,20 @@
 //
 // SPIN → SITUATION → CHOOSE → MOVE ON → REVEAL
 //
-//   enter → wheel ×1 → pulseback → reveal → callback → spell → final → (loop) enter
+//   enter → wheel ×1 → reveal → callback → spell → final → (loop) enter
 //
-// One spin per person. The Pulse Back, with its WhatsApp button, comes
-// straight after the choice, so whoever leaves for WhatsApp has already
-// sent their call; whoever stays still gets the reveal.
+// One spin per person, and one share, at the very end. There was a Pulse Back
+// screen straight after the choice with its own WhatsApp button; it meant the
+// run asked to be shared twice, and the first ask came before the reveal had
+// given anyone a reason to. The choice is now carried forward silently and
+// quoted back inside the SPELL message instead.
 //
 // Everything the run remembers lives here and, for a refresh, in
 // localStorage: the language, the scene, and the round — where the wheel
 // landed and what was chosen. No login, no identity. If the phone came in
 // through a facilitator's room link, that one letter and one choice are
 // posted to the room, anonymously; otherwise nothing leaves the phone unless
-// the participant sends their own Pulse Back.
+// the participant sends their own spell at the end.
 
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
@@ -28,7 +30,6 @@ import { setVoiceEnabled, silence } from './utils/voice';
 import SceneCallback from './components/SceneCallback';
 import SceneEnter from './components/SceneEnter';
 import SceneFinal from './components/SceneFinal';
-import ScenePulseBack from './components/ScenePulseBack';
 import SceneReveal from './components/SceneReveal';
 import SceneSpell from './components/SceneSpell';
 import SceneWheel from './components/SceneWheel';
@@ -60,14 +61,16 @@ const save = (state: Saved) => {
 /**
  * Where a refreshed page picks up. Mid-run it goes back to the scene it was
  * on; a finished run starts over, because the next person holding the phone
- * should not open onto somebody else's Pulse Back.
+ * should not open onto somebody else's spell.
  */
 const resume = (): { scene: SceneId; rounds: Round[] } => {
   const saved = load();
   const rounds = Array.isArray(saved.rounds) ? saved.rounds.slice(0, ROUNDS) : [];
-  const scene = saved.scene;
+  // A phone that was mid-run when PULSE BACK was removed has 'pulseback'
+  // saved and would otherwise resume onto a scene that no longer renders.
+  const scene = (saved.scene as string) === 'pulseback' ? 'reveal' : saved.scene;
   if (!scene || scene === 'enter' || scene === 'final') return { scene: 'enter', rounds: [] };
-  if (scene === 'wheel') return { scene: rounds.length >= ROUNDS ? 'pulseback' : 'wheel', rounds };
+  if (scene === 'wheel') return { scene: rounds.length >= ROUNDS ? 'reveal' : 'wheel', rounds };
   return rounds.length === ROUNDS ? { scene, rounds } : { scene: 'enter', rounds: [] };
 };
 
@@ -155,7 +158,7 @@ const App: React.FC = () => {
     void submitToRoom({ lang, letter: round.letter, choice: round.choice });
     setRounds(next);
     setAutoSpin(false);
-    if (next.length >= ROUNDS) setScene('pulseback');
+    if (next.length >= ROUNDS) setScene('reveal');
   };
 
   const loop = () => {
@@ -213,10 +216,6 @@ const App: React.FC = () => {
           )}
 
           {scene === 'reveal' && <SceneReveal lang={lang} onContinue={go('callback')} />}
-
-          {scene === 'pulseback' && (
-            <ScenePulseBack lang={lang} rounds={rounds} onContinue={go('reveal')} />
-          )}
 
           {scene === 'callback' && <SceneCallback lang={lang} onContinue={go('spell')} />}
 

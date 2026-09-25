@@ -138,15 +138,6 @@ const EN = {
     culture: ['Repeated choices become behavior.', 'Behavior becomes culture.'],
     cta: 'CONTINUE',
   },
-  pulseback: {
-    eyebrow: 'YOUR PULSE BACK',
-    intro: "Here's the call you made.",
-    note: 'No right answers. No score. Just what you decided.',
-    share: 'SEND TO THE PULSE THREAD',
-    cta: 'CONTINUE',
-    shareText: (rows: string[], url: string) =>
-      `◉ NUCLEUS · PULSE 04 — my Pulse Back\n\n${rows.join('\n')}\n\nNo right answers. Just the call I made.\n${url}`,
-  },
   spell: {
     eyebrow: 'ONE LAST THING',
     title: 'Now cast it.',
@@ -237,15 +228,6 @@ const ID: Copy = {
     shape: ['Nilai tidak membuat keputusan untuk kita.', 'Nilai membentuk cara kita memutuskan.'],
     culture: ['Pilihan yang berulang menjadi perilaku.', 'Perilaku menjadi budaya.'],
     cta: 'LANJUT',
-  },
-  pulseback: {
-    eyebrow: 'PULSE BACK KAMU',
-    intro: 'Ini keputusan yang kamu ambil.',
-    note: 'Tidak ada jawaban benar. Tidak ada skor. Hanya yang kamu putuskan.',
-    share: 'KIRIM KE THREAD PULSE',
-    cta: 'LANJUT',
-    shareText: (rows: string[], url: string) =>
-      `◉ NUCLEUS · PULSE 04 — Pulse Back saya\n\n${rows.join('\n')}\n\nTidak ada jawaban benar. Hanya keputusan yang saya ambil.\n${url}`,
   },
   spell: {
     eyebrow: 'SATU HAL TERAKHIR',

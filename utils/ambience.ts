@@ -12,7 +12,7 @@ let enabled = true;
 
 /** Brown-ish noise: softer and rounder than white, reads as "room". */
 const noiseBuffer = (ac: AudioContext): AudioBuffer => {
-  const len = ac.sampleRate * 2;
+  const len = ac.sampleRate * 4;
   const buf = ac.createBuffer(1, len, ac.sampleRate);
   const data = buf.getChannelData(0);
   let last = 0;
@@ -30,27 +30,48 @@ export const setAmbienceEnabled = (on: boolean): void => {
 };
 
 // ---------------------------------------------------------------------------
-// THE CALM BED — the sound under everything that is not a choosing round.
+// THE CALM BED — space, not a tone.
 // ---------------------------------------------------------------------------
 //
-// It holds the quiet
-// open so the silences read as space to think rather than as the app having
-// stopped, and it makes the reflective screens feel like one continuous place
-// instead of seventeen separate ones.
+// It holds the quiet open so the silences read as space to think rather than
+// as the app having stopped, and it makes the reflective screens feel like one
+// continuous place instead of seventeen separate ones.
 //
-// What is in it, and why:
+// WHAT IT USED TO BE, AND WHY THAT FAILED
 //
-//   * A 55 Hz root with a fifth above it. Low, consonant, no melody — nothing
-//     to follow, so it never asks for attention of its own.
-//   * Two oscillators at 110 and 114 Hz. The 4 Hz difference between them
-//     beats slowly in the air; that rate sits in the theta band people
-//     associate with a settled, receptive state. This is a mood device, not a
-//     medical one, and it is doing openly what a film score does.
-//   * Room noise under a low-pass, barely there — silence with no floor at
-//     all reads as a dropped connection.
-//   * The whole thing swells and falls once every ten seconds: six cycles a
-//     minute, the rate used to pace slow breathing. People tend to fall in
-//     with it without noticing, which is most of the effect.
+// The first bed was a stack of sustained sines: 55 and 82.5 Hz underneath,
+// then a pair at 110 and 110.7 Hz, and a partial at 330. On studio monitors
+// that is a warm drone. On a phone speaker — which is what every participant
+// actually holds — nothing below about 200 Hz reproduces at all, so the entire
+// foundation vanished and all that was left was the 110 pair and the 330
+// partial: a steady, pitched, nasal hum. Rivo's word for it was "ngggg", and
+// he was describing exactly what the hardware was doing to it.
+//
+// The lesson is not "make it quieter". A sustained pitch is the problem. The
+// ear locks onto a constant frequency within seconds and then cannot let go of
+// it; it stops being a room and becomes a noise in the room.
+//
+// WHAT IT IS NOW
+//
+// A planet, heard from orbit — which is the image PULSE 04 already runs on,
+// with the letters circling the Nucleus.
+//
+//   * Solar wind. Filtered noise is the whole foundation, because noise has no
+//     pitch to lock onto. A band-pass drifts between roughly 180 and 700 Hz
+//     over half a minute, so the timbre is always moving and never settles
+//     into a note. This is the layer that does the work.
+//   * The body below it. A 42 Hz sine under a low-pass: felt on a good
+//     speaker, silently absent on a phone, and in neither case something you
+//     can hum along to.
+//   * Distant sheen. Two very quiet partials high up, at a level near the
+//     threshold of hearing, each breathing on its own slow clock. Their
+//     periods are deliberately unrelated, so they never line up into a beat
+//     the way the old 110/110.7 pair did.
+//   * Drift. The whole bed pans slowly from side to side across forty seconds.
+//     On headphones it reads as something large moving past.
+//   * The breath. Everything still swells and falls once every ten seconds —
+//     six cycles a minute, the rate used to pace slow breathing. People tend
+//     to fall in with it without noticing, which is most of the effect.
 //
 // It sits well under the narration and ducks further whenever the voice
 // speaks, so it never competes with it.
@@ -65,16 +86,6 @@ let calm: Calm | null = null;
 const CALM_VOLUME = 0.055;
 /** Six swells a minute — the pace used to slow breathing down. */
 const BREATH_HZ = 0.1;
-/**
- * The gap between the two carriers, in hertz.
- *
- * This was 4 Hz, which is the textbook theta rate and audibly a buzz: two
- * tones a fourth of a second apart do not read as atmosphere, they read as a
- * fault in the speaker. At 0.7 Hz the same two tones drift through each other
- * about once every second and a half — slow enough to be movement rather than
- * a tone, which is what the bed was supposed to be doing in the first place.
- */
-const BEAT_HZ = 0.7;
 /** How far the bed drops while the Pulse is speaking. */
 const DUCK = 0.42;
 
@@ -88,45 +99,100 @@ export const startCalmBed = (): void => {
     master.gain.setValueAtTime(0.0001, ac.currentTime);
     // A long fade in, so it is never audible as a thing that started.
     master.gain.exponentialRampToValueAtTime(CALM_VOLUME, ac.currentTime + 6);
-    master.connect(ac.destination);
 
+    // The drift. Everything goes through here, so the whole bed moves as one.
+    // StereoPannerNode is missing on older Safari; the bed is worth more than
+    // the panning, so fall back to connecting straight through.
     const nodes: { stop: () => void }[] = [];
+    let bus: AudioNode = master;
+    if (typeof ac.createStereoPanner === 'function') {
+      const panner = ac.createStereoPanner();
+      const drift = ac.createOscillator();
+      const driftDepth = ac.createGain();
+      drift.frequency.value = 1 / 40; // one pass every forty seconds
+      driftDepth.gain.value = 0.55;
+      drift.connect(driftDepth);
+      driftDepth.connect(panner.pan);
+      drift.start();
+      nodes.push({ stop: () => drift.stop() });
+      master.connect(panner);
+      panner.connect(ac.destination);
+      bus = master;
+    } else {
+      master.connect(ac.destination);
+    }
 
-    const drone = (freq: number, level: number, type: OscillatorType = 'sine') => {
+    /** A sine that is felt rather than followed. */
+    const tone = (freq: number, level: number, cutoff: number) => {
       const osc = ac.createOscillator();
       const gain = ac.createGain();
-      osc.type = type;
+      const lp = ac.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = cutoff;
+      osc.type = 'sine';
       osc.frequency.value = freq;
       gain.gain.value = level;
-      osc.connect(gain);
-      gain.connect(master);
+      osc.connect(lp);
+      lp.connect(gain);
+      gain.connect(bus);
       osc.start();
       nodes.push({ stop: () => osc.stop() });
     };
 
-    drone(55, 0.42);             // root
-    drone(82.5, 0.18);           // a fifth above it
-    drone(110, 0.13);            // carrier
-    drone(110 + BEAT_HZ, 0.13);  // and its slow drift
-    // A quiet partial two octaves up. Without it the bed is all bottom end,
-    // which on a phone speaker is the muddiest thing it could be; this is what
-    // makes it read as air rather than as rumble.
-    drone(330, 0.05);
+    // The body. Low enough that a phone will not reproduce it, which is the
+    // point: on a phone the bed should be wind and nothing else.
+    tone(42, 0.5, 90);
 
-    // Room tone, filtered down to almost nothing.
-    const noise = ac.createBufferSource();
-    noise.buffer = noiseBuffer(ac);
-    noise.loop = true;
-    const filter = ac.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 520;
-    const noiseGain = ac.createGain();
-    noiseGain.gain.value = 0.03;
-    noise.connect(filter);
-    filter.connect(noiseGain);
-    noiseGain.connect(master);
-    noise.start();
-    nodes.push({ stop: () => noise.stop() });
+    // SOLAR WIND — the layer you actually hear. Noise through a band-pass
+    // that never stops moving, so the ear has no pitch to hold on to.
+    const wind = ac.createBufferSource();
+    wind.buffer = noiseBuffer(ac);
+    wind.loop = true;
+    const band = ac.createBiquadFilter();
+    band.type = 'bandpass';
+    band.frequency.value = 320;
+    band.Q.value = 0.7;
+    const sweep = ac.createOscillator();
+    const sweepDepth = ac.createGain();
+    sweep.frequency.value = 1 / 31; // a slow pass through the spectrum
+    sweepDepth.gain.value = 260;    // 320 ± 260 Hz
+    sweep.connect(sweepDepth);
+    sweepDepth.connect(band.frequency);
+    sweep.start();
+    const windGain = ac.createGain();
+    windGain.gain.value = 0.85;
+    wind.connect(band);
+    band.connect(windGain);
+    windGain.connect(bus);
+    wind.start();
+    nodes.push({ stop: () => wind.stop() }, { stop: () => sweep.stop() });
+
+    /**
+     * Distant sheen. Two partials near the threshold of hearing, each
+     * breathing on its own unrelated clock — 23 s and 37 s, so they never
+     * line up into a repeating pattern and never beat against each other.
+     */
+    const shimmer = (freq: number, level: number, periodS: number) => {
+      const osc = ac.createOscillator();
+      const gain = ac.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.value = level * 0.35;
+      const lfo = ac.createOscillator();
+      const depth = ac.createGain();
+      lfo.frequency.value = 1 / periodS;
+      depth.gain.value = level * 0.65;
+      lfo.connect(depth);
+      depth.connect(gain.gain);
+      lfo.start();
+      osc.connect(gain);
+      gain.connect(bus);
+      osc.start();
+      nodes.push({ stop: () => osc.stop() }, { stop: () => lfo.stop() });
+    };
+
+    shimmer(587.33, 0.012, 23); // D5
+    shimmer(880, 0.008, 37);    // A5
 
     // The breath: one slow swell every ten seconds, across the whole bed.
     const lfo = ac.createOscillator();
