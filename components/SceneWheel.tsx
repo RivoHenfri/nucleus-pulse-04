@@ -78,7 +78,7 @@ const SceneWheel: React.FC<Props> = ({ lang, played, autoSpin, onChosen }) => {
 
   useEffect(() => {
     if (autoSpin) {
-      const t = setTimeout(spin, 700);
+      const t = setTimeout(spin, 200);
       return () => clearTimeout(t);
     }
     // The second round is the one where the participant spins for the first
@@ -91,7 +91,7 @@ const SceneWheel: React.FC<Props> = ({ lang, played, autoSpin, onChosen }) => {
   const landed = () => {
     setMode('landed');
     // Beat 1: the wheel stops, and the screen becomes quiet.
-    setTimeout(() => setPhase('situation'), 1700);
+    setTimeout(() => setPhase('situation'), 700);
   };
 
   useEffect(() => {
@@ -120,7 +120,7 @@ const SceneWheel: React.FC<Props> = ({ lang, played, autoSpin, onChosen }) => {
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.94, y: -12 }}
-            transition={{ duration: 0.9, ease: [0.22, 0.61, 0.36, 1] }}
+            transition={{ duration: 0.55, ease: [0.22, 0.61, 0.36, 1] }}
             className="w-full"
           >
             <OrbitWheel size={size} mode={mode} target={target} used={used} onLanded={landed} onTap={spin} />
@@ -149,7 +149,7 @@ const SceneWheel: React.FC<Props> = ({ lang, played, autoSpin, onChosen }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.9 }}
+              transition={{ duration: 0.6 }}
               className="w-full max-w-md"
             >
               {/* The letter, lit, as it landed. Not the value's name. */}
@@ -208,8 +208,8 @@ const SceneWheel: React.FC<Props> = ({ lang, played, autoSpin, onChosen }) => {
         )}
       </AnimatePresence>
 
-      {/* Three rounds, three marks. Momentum, not a score. */}
-      <div className="absolute bottom-7 left-0 right-0 flex justify-center gap-2.5" aria-hidden>
+      {/* One mark per round — only when there is more than one round. */}
+      <div className={`${ROUNDS > 1 ? 'flex' : 'hidden'} absolute bottom-7 left-0 right-0 justify-center gap-2.5`} aria-hidden>
         {Array.from({ length: ROUNDS }).map((_, k) => (
           <span
             key={k}

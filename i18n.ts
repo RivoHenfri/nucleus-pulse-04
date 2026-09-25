@@ -117,6 +117,8 @@ const EN = {
     brand: 'NUCLEUS PULSE',
     pulse: '04 — NUCLEUS',
     lines: ['Things move.', 'Context changes.', 'Decisions still happen.'],
+    welcome: 'Welcome to the NUCLEUS Wheel.',
+    values: 'Our values.',
     cta: 'SPIN',
   },
   wheel: {
@@ -128,9 +130,9 @@ const EN = {
     bank: EN_BANK,
   },
   reveal: {
-    made: 'You made the decisions.',
-    changed: 'The situations changed.',
-    guided: 'But what guided the decisions?',
+    made: 'You made a decision.',
+    changed: 'The wheel could have landed anywhere.',
+    guided: 'But what guided it?',
     values: "These aren't answers. They're values.",
     shape: ["Values don't make decisions for us.", 'They shape how we make them.'],
     culture: ['Repeated choices become behavior.', 'Behavior becomes culture.'],
@@ -138,12 +140,12 @@ const EN = {
   },
   pulseback: {
     eyebrow: 'YOUR PULSE BACK',
-    intro: 'Here are the three calls you made.',
+    intro: "Here's the call you made.",
     note: 'No right answers. No score. Just what you decided.',
     share: 'SEND TO THE PULSE THREAD',
     cta: 'CONTINUE',
     shareText: (rows: string[], url: string) =>
-      `◉ NUCLEUS · PULSE 04 — my Pulse Back\n\n${rows.join('\n')}\n\nNo right answers. Just the calls I made.\n${url}`,
+      `◉ NUCLEUS · PULSE 04 — my Pulse Back\n\n${rows.join('\n')}\n\nNo right answers. Just the call I made.\n${url}`,
   },
   callback: {
     rows: [
@@ -159,7 +161,7 @@ const EN = {
   final: {
     lines: ['Find what matters.', 'Decide what moves.'],
     ours: 'Our values. Our culture.',
-    again: 'SPIN AGAIN',
+    again: 'NEXT PERSON',
     looping: 'Starting over for the next person',
   },
 };
@@ -178,6 +180,8 @@ const ID: Copy = {
     brand: 'NUCLEUS PULSE',
     pulse: '04 — NUCLEUS',
     lines: ['Segala hal bergerak.', 'Konteks berubah.', 'Keputusan tetap terjadi.'],
+    welcome: 'Selamat datang di NUCLEUS Wheel.',
+    values: 'Nilai-nilai kita.',
     cta: 'PUTAR',
   },
   wheel: {
@@ -189,9 +193,9 @@ const ID: Copy = {
     bank: ID_BANK,
   },
   reveal: {
-    made: 'Kamu yang membuat keputusan.',
-    changed: 'Situasinya berubah-ubah.',
-    guided: 'Tapi apa yang menuntun keputusan itu?',
+    made: 'Kamu sudah mengambil keputusan.',
+    changed: 'Rodanya bisa berhenti di mana saja.',
+    guided: 'Tapi apa yang menuntunnya?',
     values: 'Ini bukan jawaban. Ini nilai.',
     shape: ['Nilai tidak membuat keputusan untuk kita.', 'Nilai membentuk cara kita memutuskan.'],
     culture: ['Pilihan yang berulang menjadi perilaku.', 'Perilaku menjadi budaya.'],
@@ -199,7 +203,7 @@ const ID: Copy = {
   },
   pulseback: {
     eyebrow: 'PULSE BACK KAMU',
-    intro: 'Ini tiga keputusan yang kamu ambil.',
+    intro: 'Ini keputusan yang kamu ambil.',
     note: 'Tidak ada jawaban benar. Tidak ada skor. Hanya yang kamu putuskan.',
     share: 'KIRIM KE THREAD PULSE',
     cta: 'LANJUT',
@@ -220,7 +224,7 @@ const ID: Copy = {
   final: {
     lines: ['Temukan yang penting.', 'Putuskan yang bergerak.'],
     ours: 'Nilai kita. Budaya kita.',
-    again: 'PUTAR LAGI',
+    again: 'ORANG BERIKUTNYA',
     looping: 'Mulai lagi untuk orang berikutnya',
   },
 };

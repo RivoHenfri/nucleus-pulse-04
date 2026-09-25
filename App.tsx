@@ -2,7 +2,11 @@
 //
 // SPIN → SITUATION → CHOOSE → MOVE ON → REVEAL
 //
-//   enter → wheel ×3 → reveal → pulseback → callback → final → (loop) enter
+//   enter → wheel ×1 → pulseback → reveal → callback → final → (loop) enter
+//
+// One spin per person. The Pulse Back, with its WhatsApp button, comes
+// straight after the choice, so whoever leaves for WhatsApp has already
+// sent their call; whoever stays still gets the reveal.
 //
 // Everything the run remembers lives here and, for a refresh, in
 // localStorage: the language, the scene, and the three rounds — where the
@@ -59,7 +63,7 @@ const resume = (): { scene: SceneId; rounds: Round[] } => {
   const rounds = Array.isArray(saved.rounds) ? saved.rounds.slice(0, ROUNDS) : [];
   const scene = saved.scene;
   if (!scene || scene === 'enter' || scene === 'final') return { scene: 'enter', rounds: [] };
-  if (scene === 'wheel') return { scene: rounds.length >= ROUNDS ? 'reveal' : 'wheel', rounds };
+  if (scene === 'wheel') return { scene: rounds.length >= ROUNDS ? 'pulseback' : 'wheel', rounds };
   return rounds.length === ROUNDS ? { scene, rounds } : { scene: 'enter', rounds: [] };
 };
 
@@ -79,7 +83,7 @@ const rehearsal = (): { scene: SceneId; rounds: Round[] } | null => {
       { letter: 'O', choice: 2 },
       { letter: 'T', choice: 0 },
       { letter: 'S', choice: 1 },
-    ].slice(0, wanted === 'wheel' ? 1 : 3) as Round[],
+    ].slice(0, wanted === 'wheel' ? 0 : ROUNDS) as Round[],
   };
 };
 
@@ -140,7 +144,7 @@ const App: React.FC = () => {
     const next = [...rounds, round];
     setRounds(next);
     setAutoSpin(false);
-    if (next.length >= ROUNDS) setScene('reveal');
+    if (next.length >= ROUNDS) setScene('pulseback');
   };
 
   const loop = () => {
@@ -180,7 +184,7 @@ const App: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.85, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
         >
           {scene === 'enter' && (
             <SceneEnter
@@ -197,10 +201,10 @@ const App: React.FC = () => {
             <SceneWheel lang={lang} played={rounds} autoSpin={autoSpin} onChosen={chosen} />
           )}
 
-          {scene === 'reveal' && <SceneReveal lang={lang} onContinue={go('pulseback')} />}
+          {scene === 'reveal' && <SceneReveal lang={lang} onContinue={go('callback')} />}
 
           {scene === 'pulseback' && (
-            <ScenePulseBack lang={lang} rounds={rounds} onContinue={go('callback')} />
+            <ScenePulseBack lang={lang} rounds={rounds} onContinue={go('reveal')} />
           )}
 
           {scene === 'callback' && <SceneCallback lang={lang} onContinue={go('final')} />}

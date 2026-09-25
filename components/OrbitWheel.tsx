@@ -116,7 +116,7 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
     const i = LETTERS.indexOf(target);
     const from = angle.get();
     const quick = reducedMotion();
-    const turns = quick ? 1 : 3 + Math.floor(Math.random() * 2);
+    const turns = quick ? 1 : 2 + Math.floor(Math.random() * 2);
     // Solve for the resting angle: at least `turns` laps on, and congruent to
     // the angle that puts letter i under the pointer.
     let to = from + turns * 360;
@@ -129,13 +129,13 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
     const run = async () => {
       if (!quick) {
         buzz(24);
-        await animate(angle, from - 14, { duration: 0.42, ease: [0.3, 0, 0.4, 1] });
+        await animate(angle, from - 14, { duration: 0.3, ease: [0.3, 0, 0.4, 1] });
         if (stopped) return;
       }
-      // Gentle acceleration, then a long, long settle. Overshoots by a few
+      // Gentle acceleration, then a long settle — under three seconds in all. Overshoots by a few
       // degrees so the spring has something to pull back.
       await animate(angle, to + 5, {
-        duration: quick ? 1.4 : 5.2,
+        duration: quick ? 1.2 : 2.6,
         ease: [0.42, 0, 0.1, 1],
       });
       if (stopped) return;

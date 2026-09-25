@@ -9,10 +9,12 @@
     "reveal": "relaxed and warm, with a sense of curious discovery. Never preachy.",
     "pulseback": "warm and appreciative.",
     "callback": "grounded and warm, quietly confident.",
-    "final": "warm and uplifting, a soft smile."
+    "final": "warm and uplifting, a soft smile.",
+    "welcome": "warm and welcoming with a bright smile. Say each of the six letters on its own, calmly. Stop right after the last word."
   },
   "languages": {
     "en": {
+      "welcome": "Welcome to the Nucleus Wheel. O. P. T. I. C. S. Our values.",
       "enter-1": "Things move.",
       "enter-2": "Context changes.",
       "enter-3": "Decisions still happen.",
@@ -23,12 +25,12 @@
       "sit-I": "The team is already moving with an agreed plan. You see another approach that may work better, but introducing it now could reopen the discussion.",
       "sit-C": "Two teams disagree on what should happen next. You could make the call yourself and move faster.",
       "sit-S": "The quickest fix will solve today's problem, but it will probably create the same work again next month.",
-      "reveal-1": "You made the decisions. The situations changed.",
-      "reveal-2": "But what guided the decisions?",
+      "reveal-1": "You made a decision. The wheel could have landed anywhere.",
+      "reveal-2": "But what guided it?",
       "reveal-3": "These aren't answers. They're values.",
       "reveal-4": "Values don't make decisions for us. They shape how we make them.",
       "reveal-5": "Repeated choices become behavior. Behavior becomes culture.",
-      "pulseback": "Here are the three calls you made.",
+      "pulseback": "Here's the call you made.",
       "callback-1": "Information can help. Experience can help. A I can help.",
       "callback-2": "But none of them should replace the thing at the center.",
       "callback-3": "Human judgment.",
@@ -36,6 +38,7 @@
       "final-2": "Our values. Our culture."
     },
     "id": {
+      "welcome": "Selamat datang di Nucleus Wheel. O. P. T. I. C. S. Nilai-nilai kita.",
       "enter-1": "Segala hal bergerak.",
       "enter-2": "Konteks berubah.",
       "enter-3": "Keputusan tetap terjadi.",
@@ -46,12 +49,12 @@
       "sit-I": "Tim sudah bergerak dengan rencana yang disepakati. Kamu melihat pendekatan lain yang mungkin lebih baik, tapi mengajukannya sekarang bisa membuka diskusi lagi.",
       "sit-C": "Dua tim tidak sepakat soal langkah berikutnya. Kamu bisa memutuskan sendiri dan bergerak lebih cepat.",
       "sit-S": "Perbaikan tercepat akan menyelesaikan masalah hari ini, tapi kemungkinan besar menimbulkan pekerjaan yang sama bulan depan.",
-      "reveal-1": "Kamu yang membuat keputusan. Situasinya berubah-ubah.",
-      "reveal-2": "Tapi apa yang menuntun keputusan itu?",
+      "reveal-1": "Kamu sudah mengambil keputusan. Rodanya bisa berhenti di mana saja.",
+      "reveal-2": "Tapi apa yang menuntunnya?",
       "reveal-3": "Ini bukan jawaban. Ini nilai.",
       "reveal-4": "Nilai tidak membuat keputusan untuk kita. Nilai membentuk cara kita memutuskan.",
       "reveal-5": "Pilihan yang berulang menjadi perilaku. Perilaku menjadi budaya.",
-      "pulseback": "Ini tiga keputusan yang kamu ambil.",
+      "pulseback": "Ini keputusan yang kamu ambil.",
       "callback-1": "Informasi bisa membantu. Pengalaman bisa membantu. A I bisa membantu.",
       "callback-2": "Tapi tidak satu pun seharusnya menggantikan yang ada di pusatnya.",
       "callback-3": "Penilaian manusia.",

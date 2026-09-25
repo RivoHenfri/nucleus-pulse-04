@@ -1,4 +1,4 @@
-// PULSE BACK — the three calls, handed back.
+// PULSE BACK — the call, handed back, straight after it was made.
 //
 // There is no room in PULSE 04: no facilitator screen, no live aggregate, no
 // server. What the playbook allows instead is the participant's own end
@@ -29,8 +29,8 @@ interface Props {
   onContinue: () => void;
 }
 
-// eyebrow · intro · three rows · note · buttons
-const GAPS = [500, 900, 1300, 900, 900, 1300, 900];
+// eyebrow · intro · the row · note · buttons
+const GAPS = [500, 900, 1300, 1100, 900];
 
 export const shareUrl = (): string => {
   try {
@@ -88,15 +88,15 @@ const ScenePulseBack: React.FC<Props> = ({ lang, rounds, onContinue }) => {
         ))}
       </div>
 
-      <Beat show={shown >= 6} className="mt-7">
+      <Beat show={shown >= 4} className="mt-7">
         <p className="text-[13px] leading-relaxed text-gray-500">{c.note}</p>
       </Beat>
 
       <motion.div
         initial={false}
-        animate={{ opacity: shown >= 7 ? 1 : 0, y: shown >= 7 ? 0 : 8 }}
+        animate={{ opacity: shown >= 5 ? 1 : 0, y: shown >= 5 ? 0 : 8 }}
         transition={{ duration: 1 }}
-        style={{ pointerEvents: shown >= 7 ? 'auto' : 'none' }}
+        style={{ pointerEvents: shown >= 5 ? 'auto' : 'none' }}
         className="mt-9"
       >
         <motion.button
@@ -111,7 +111,7 @@ const ScenePulseBack: React.FC<Props> = ({ lang, rounds, onContinue }) => {
         </motion.button>
       </motion.div>
 
-      <Continue show={shown >= 7} label={c.cta} onClick={onContinue} />
+      <Continue show={shown >= 5} label={c.cta} onClick={onContinue} />
     </Stage>
   );
 };

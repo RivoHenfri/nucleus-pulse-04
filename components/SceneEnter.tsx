@@ -1,6 +1,9 @@
 // OPENING — locked direction.
 //
 //   ◉ NUCLEUS
+//   Welcome to the NUCLEUS Wheel.
+//   O · P · T · I · C · S
+//   Our values.
 //   Things move.
 //   Context changes.
 //   Decisions still happen.
@@ -8,12 +11,14 @@
 //
 // The mark ignites exactly as it did in PULSE 02, so the four September
 // Pulses open the same way. Then a language — the tap that buys the right to
-// play sound on a phone — then three short lines, then one button. SPIN here
-// is the first spin: the wheel is already turning when it appears.
+// play sound on a phone — then the welcome: the wheel, its six letters, and
+// what they are, so nobody meets it cold. The six names are still held back
+// for the reveal. Then the three locked lines and one button; SPIN here is
+// the spin, and the wheel is already turning when it appears.
 
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
-import { COPY, LANGUAGES, type Lang } from '../i18n';
+import { COPY, LANGUAGES, LETTERS, type Lang } from '../i18n';
 import { hush, narrate, setNarrationLang, unlockAudio, whenQuiet } from '../utils/narration';
 import { buzz, unlockWebAudio } from '../utils/sound';
 import { Beat, Continue, Stage, beats, cue, useBeats } from './atoms';
@@ -28,8 +33,8 @@ interface Props {
 /** The mark takes this long to light before anything is asked of anyone. */
 const IGNITION_MS = cue(4200);
 
-// line · line · line · button
-const GAPS = beats(1300, 2300, 2300, 2000);
+// welcome · letters · our values · line · line · line · button
+const GAPS = beats(1100, 1700, 2200, 3000, 2000, 2000, 2000);
 
 const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
   const c = COPY[lang].enter;
@@ -53,9 +58,10 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
     onChooseLang(next);
     setNarrationLang(next);
     setStarted(true);
-    narrate('enter-1', cue(1300));
-    narrate('enter-2', cue(3600));
-    narrate('enter-3', cue(5900));
+    narrate('welcome', cue(1100));
+    narrate('enter-1', cue(8000));
+    narrate('enter-2', cue(10000));
+    narrate('enter-3', cue(12000));
   };
 
   /** The button waits for the last line to finish being spoken. */
@@ -71,7 +77,7 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
 
   return (
     <Stage glow>
-      <NucleusLogo size={220} ignite delay={0} />
+      <NucleusLogo size={started ? 150 : 220} ignite={!started} delay={0} />
 
       <AnimatePresence mode="wait">
         {!started ? (
@@ -111,14 +117,27 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
             transition={{ duration: 1.2 }}
             className="mt-10"
           >
+            {/* The welcome, and OPTICS introduced as the letters will sit on the wheel. */}
             <Beat show={shown >= 1}>
-              <p className="font-display text-[26px] leading-[1.35] text-[#EDE7DA]">{c.lines[0]}</p>
+              <p className="font-display text-[24px] leading-[1.35] text-[#EDE7DA]">{c.welcome}</p>
             </Beat>
-            <Beat show={shown >= 2} className="mt-2">
-              <p className="font-display text-[26px] leading-[1.35] text-[#EDE7DA]/85">{c.lines[1]}</p>
+            <Beat show={shown >= 2} className="mt-5">
+              <p className="text-[17px] font-semibold tracking-[0.5em] text-sky-100/90">
+                {LETTERS.join(' · ')}
+              </p>
             </Beat>
-            <Beat show={shown >= 3} className="mt-2">
-              <p className="font-display text-[26px] leading-[1.35] text-[#EDE7DA]/70">{c.lines[2]}</p>
+            <Beat show={shown >= 3} className="mt-3">
+              <p className="text-[14px] tracking-[0.14em] text-gray-400">{c.values}</p>
+            </Beat>
+
+            <Beat show={shown >= 4} className="mt-9">
+              <p className="font-display text-[21px] leading-[1.4] text-[#EDE7DA]">{c.lines[0]}</p>
+            </Beat>
+            <Beat show={shown >= 5}>
+              <p className="font-display text-[21px] leading-[1.4] text-[#EDE7DA]/85">{c.lines[1]}</p>
+            </Beat>
+            <Beat show={shown >= 6}>
+              <p className="font-display text-[21px] leading-[1.4] text-[#EDE7DA]/70">{c.lines[2]}</p>
             </Beat>
 
             <Continue show={shown >= GAPS.length && spoken} label={c.cta} onClick={onSpin} tone="solid" />

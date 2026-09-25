@@ -9,7 +9,7 @@ four September Pulses (SIGNAL → TRUTH → ORBIT → NUCLEUS). Built from
     SPIN → SITUATION → CHOOSE → MOVE ON → REVEAL
 
 Spin the OPTICS wheel, face a realistic workplace tension, make a call, move
-on. Three rounds, three different letters. Only at the end does the app
+on. One spin per person. Only at the end does the app
 reveal what was underneath the decisions: values → behavior → culture →
 human judgment.
 
@@ -17,10 +17,10 @@ human judgment.
 
 | Scene | What happens |
 |-------|--------------|
-| OPENING | The Nucleus mark ignites (same as PULSE 02). Language. *Things move. Context changes. Decisions still happen.* SPIN. |
-| WHEEL ×3 | O · P · T · I · C · S orbit the Nucleus. Wind-up → accelerate → long settle → snap. The letter picks a situation; three plausible choices; captured silently. |
+| OPENING | The Nucleus mark ignites (same as PULSE 02). Language. *Welcome to the NUCLEUS Wheel. O · P · T · I · C · S. Our values.* Then *Things move. Context changes. Decisions still happen.* SPIN. |
+| WHEEL ×1 | O · P · T · I · C · S orbit the Nucleus. Wind-up → accelerate → long settle → snap. The letter picks a situation; three plausible choices; captured silently. |
+| PULSE BACK | Straight after the choice: the call the participant made, quoted and never interpreted, with one button that sends it to the Pulse WhatsApp thread. |
 | REVEAL | The letters fall into the Nucleus, open into the six values, and the orbit comes back as a helix ring. *Repeated choices become behavior. Behavior becomes culture.* |
-| PULSE BACK | The three calls the participant made, quoted and never interpreted. One button sends them to the Pulse WhatsApp thread. |
 | CALLBACK | SIGNAL / TRUTH / ORBIT / NUCLEUS, then *HUMAN JUDGMENT.* |
 | FINAL | *Find what matters. Decide what moves.* Then it loops back to the opening by itself after 22 s, ready for the next person. |
 
