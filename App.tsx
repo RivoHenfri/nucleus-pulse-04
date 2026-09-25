@@ -21,7 +21,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { COPY, type Lang } from './i18n';
 import { ROUNDS, type Round, type SceneId } from './types';
-import { setAmbienceEnabled, startCalmBed, stopCalmBed } from './utils/ambience';
+import { liftCalmBed, setAmbienceEnabled, startCalmBed, stopCalmBed } from './utils/ambience';
 import { hush, onAudioTrouble, setNarrationEnabled, setNarrationLang } from './utils/narration';
 import { joinRoom, submitToRoom } from './utils/room';
 import { setEffectsEnabled, unlockWebAudio } from './utils/sound';
@@ -164,6 +164,8 @@ const App: React.FC = () => {
   const loop = () => {
     hush();
     silence();
+    // The next person starts from the same quiet this one did.
+    liftCalmBed(false);
     setRounds([]);
     setAutoSpin(false);
     setScene('enter');

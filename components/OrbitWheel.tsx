@@ -24,6 +24,7 @@
 
 import { animate, motion, useAnimationFrame, useMotionValue, useTransform } from 'motion/react';
 import React, { useEffect, useRef, useState } from 'react';
+import { liftCalmBed } from '../utils/ambience';
 import { LETTERS } from '../i18n';
 import type { Letter } from '../types';
 import {
@@ -185,6 +186,8 @@ const OrbitWheel: React.FC<Props> = ({ size, mode, target, used = [], onLanded, 
       stopAir();
       // The landing is the drop: the beat is cut off by it, not faded under it.
       stopDrive();
+      // ...and the room opens up behind it, so the reflective half is not silence.
+      liftCalmBed(true);
       bowl(LETTER_NOTE[i] / 2);
       // Coming to rest: one firm bump, then two fading after-shakes.
       buzz([30, 70, 16, 110, 10]);

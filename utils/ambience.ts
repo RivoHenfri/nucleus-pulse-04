@@ -91,11 +91,41 @@ interface Calm {
 
 let calm: Calm | null = null;
 
-const CALM_VOLUME = 0.055;
+/**
+ * The bed before the wheel, and the bed after it.
+ *
+ * They are different numbers because of what the beat does to the ear. The
+ * drive that plays under a spin peaks around 0.5 and sits at 0.34; a 0.055 bed
+ * arriving straight after that does not read as quiet, it reads as nothing at
+ * all, and the room the whole Pulse depends on goes dry exactly when the
+ * reflective half begins. Rivo heard it immediately and described it as the
+ * background having dried up after the wheel.
+ *
+ * Measured in the running app, the bed was never stopping: 0.055 after the
+ * landing, 11 nodes, still breathing. It was a loudness contrast, not a bug,
+ * and raising the level is the honest fix rather than hunting for a fault.
+ *
+ * So the second half runs fuller. It is the half with the reveal, the
+ * callback and the spell in it, and it should feel like a place rather than a
+ * pause between two sounds.
+ */
+const CALM_BASE = 0.075;
+const CALM_AFTER = 0.105;
 /** Six swells a minute — the pace used to slow breathing down. */
 const BREATH_HZ = 0.1;
-/** How far the bed drops while the Pulse is speaking. */
-const DUCK = 0.42;
+/**
+ * How far the bed drops while the Pulse is speaking.
+ *
+ * Was 0.42, which put the bed at 0.023 under narration — and the scenes after
+ * the wheel are almost entirely narration, so the room spent most of the
+ * second half inaudible. At 0.62 the voice still steps clearly in front of it
+ * without the room leaving behind it.
+ */
+const DUCK = 0.62;
+
+/** The level the bed is currently aiming at, before ducking. Named so it
+ *  cannot be shadowed by the `level` parameter of the tone() helper below. */
+let bedLevel = CALM_BASE;
 
 export const startCalmBed = (): void => {
   if (calm || !enabled) return;
@@ -106,7 +136,7 @@ export const startCalmBed = (): void => {
     const master = ac.createGain();
     master.gain.setValueAtTime(0.0001, ac.currentTime);
     // A long fade in, so it is never audible as a thing that started.
-    master.gain.exponentialRampToValueAtTime(CALM_VOLUME, ac.currentTime + 6);
+    master.gain.exponentialRampToValueAtTime(bedLevel, ac.currentTime + 6);
 
     // The drift. Everything goes through here, so the whole bed moves as one.
     // StereoPannerNode is missing on older Safari; the bed is worth more than
@@ -232,7 +262,7 @@ export const startCalmBed = (): void => {
     const lfo = ac.createOscillator();
     const lfoDepth = ac.createGain();
     lfo.frequency.value = BREATH_HZ;
-    lfoDepth.gain.value = CALM_VOLUME * 0.45;
+    lfoDepth.gain.value = bedLevel * 0.45;
     lfo.connect(lfoDepth);
     lfoDepth.connect(master.gain);
     lfo.start();
@@ -241,6 +271,31 @@ export const startCalmBed = (): void => {
     calm = { master, nodes };
   } catch {
     // Sound is part of the experience, never a precondition for it.
+  }
+};
+
+/**
+ * Open the room up for the second half of the Pulse.
+ *
+ * Called when the wheel lands, which is the moment the beat stops and the
+ * reflective scenes begin. The lift takes eight seconds, far longer than the
+ * cut it follows, so what the ear notices is the room still being there rather
+ * than something turning itself up.
+ *
+ * `on` is false when the Pulse loops for the next person, so they start from
+ * the same quiet the last person did.
+ */
+export const liftCalmBed = (on: boolean): void => {
+  bedLevel = on ? CALM_AFTER : CALM_BASE;
+  const ac = audioContext();
+  if (!calm || !ac) return;
+  try {
+    const g = calm.master.gain;
+    g.cancelScheduledValues(ac.currentTime);
+    g.setValueAtTime(Math.max(g.value, 0.0001), ac.currentTime);
+    g.exponentialRampToValueAtTime(bedLevel, ac.currentTime + 8);
+  } catch {
+    // ignore
   }
 };
 
@@ -263,7 +318,7 @@ export const duckCalmBed = (under: boolean): void => {
   if (!ac) return;
   try {
     const g = calm.master.gain;
-    const target = under ? CALM_VOLUME * DUCK : CALM_VOLUME;
+    const target = under ? bedLevel * DUCK : bedLevel;
     g.cancelScheduledValues(ac.currentTime);
     g.setValueAtTime(Math.max(g.value, 0.0001), ac.currentTime);
     // Down quickly so the first word is never fought; back up slowly so the
