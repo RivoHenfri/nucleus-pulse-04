@@ -16,9 +16,10 @@
 
 import { AnimatePresence, motion } from 'motion/react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { COPY, LETTERS, type Lang } from '../i18n';
+import { COPY, type Lang } from '../i18n';
 import { ROUNDS, type Letter, type Round } from '../types';
 import { hush, narrate } from '../utils/narration';
+import { nextLetter, rememberLetter } from '../utils/spread';
 import { buzz, settle, tap } from '../utils/sound';
 import { cue } from './atoms';
 import OrbitWheel, { type WheelMode } from './OrbitWheel';
@@ -42,11 +43,13 @@ const wheelSize = (): number => {
   }
 };
 
-/** Any letter not yet played. Three spins, three values, never a repeat. */
-const pickLetter = (played: Round[]): Letter => {
-  const open = LETTERS.filter(l => !played.some(r => r.letter === l));
-  return open[Math.floor(Math.random() * open.length)];
-};
+/**
+ * Where the wheel lands. The deck lives in utils/spread.ts: every letter comes
+ * up once on this phone before any letter comes up twice, so a run of the same
+ * value cannot happen. What this passes along is whatever the current run has
+ * already played, so a multi-round run never repeats itself either.
+ */
+const pickLetter = (played: Round[]): Letter => nextLetter(played.map(r => r.letter));
 
 const shuffled = (): (0 | 1 | 2)[] => {
   const order: (0 | 1 | 2)[] = [0, 1, 2];
@@ -72,7 +75,9 @@ const SceneWheel: React.FC<Props> = ({ lang, played, autoSpin, onChosen }) => {
     hush();
     buzz(14);
     tap();
-    setTarget(pickLetter(played));
+    const letter = pickLetter(played);
+    rememberLetter(letter);
+    setTarget(letter);
     setMode('spinning');
   };
 

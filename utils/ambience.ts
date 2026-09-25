@@ -57,16 +57,24 @@ export const setAmbienceEnabled = (on: boolean): void => {
 // with the letters circling the Nucleus.
 //
 //   * Solar wind. Filtered noise is the whole foundation, because noise has no
-//     pitch to lock onto. A band-pass drifts between roughly 180 and 700 Hz
+//     pitch to lock onto. A band-pass drifts between roughly 120 and 720 Hz
 //     over half a minute, so the timbre is always moving and never settles
 //     into a note. This is the layer that does the work.
-//   * The body below it. A 42 Hz sine under a low-pass: felt on a good
-//     speaker, silently absent on a phone, and in neither case something you
-//     can hum along to.
+//   * Warm air. A second, narrower band of the same noise sitting around
+//     250 Hz, swelling in and out every seventeen seconds. This is the layer
+//     that keeps the bed from reading as solemn. The first version of this
+//     planet was all deep body and high sheen with nothing in the middle,
+//     which is exactly the shape of a serious sound — Rivo heard it straight
+//     away. Warmth lives in the lower-middle, and it has to be noise rather
+//     than a chord, or the hum comes back.
+//   * The body below it. A 46 Hz sine under a low-pass, quieter than it was:
+//     felt on a good speaker, silently absent on a phone, and in neither case
+//     something you can hum along to.
 //   * Distant sheen. Two very quiet partials high up, at a level near the
 //     threshold of hearing, each breathing on its own slow clock. Their
 //     periods are deliberately unrelated, so they never line up into a beat
-//     the way the old 110/110.7 pair did.
+//     the way the old 110/110.7 pair did. A major sixth apart now rather than
+//     a fourth — the friendlier of the two intervals.
 //   * Drift. The whole bed pans slowly from side to side across forty seconds.
 //     On headphones it reads as something large moving past.
 //   * The breath. Everything still swells and falls once every ten seconds —
@@ -140,8 +148,9 @@ export const startCalmBed = (): void => {
     };
 
     // The body. Low enough that a phone will not reproduce it, which is the
-    // point: on a phone the bed should be wind and nothing else.
-    tone(42, 0.5, 90);
+    // point: on a phone the bed should be wind and nothing else. Kept light —
+    // a heavy bottom end is most of what makes a room sound serious.
+    tone(46, 0.30, 80);
 
     // SOLAR WIND — the layer you actually hear. Noise through a band-pass
     // that never stops moving, so the ear has no pitch to hold on to.
@@ -150,22 +159,47 @@ export const startCalmBed = (): void => {
     wind.loop = true;
     const band = ac.createBiquadFilter();
     band.type = 'bandpass';
-    band.frequency.value = 320;
-    band.Q.value = 0.7;
+    band.frequency.value = 420;
+    band.Q.value = 0.55;            // wider, so it reads as air and not as a filter
     const sweep = ac.createOscillator();
     const sweepDepth = ac.createGain();
     sweep.frequency.value = 1 / 31; // a slow pass through the spectrum
-    sweepDepth.gain.value = 260;    // 320 ± 260 Hz
+    sweepDepth.gain.value = 300;    // 420 ± 300 Hz
     sweep.connect(sweepDepth);
     sweepDepth.connect(band.frequency);
     sweep.start();
     const windGain = ac.createGain();
-    windGain.gain.value = 0.85;
+    windGain.gain.value = 0.8;
     wind.connect(band);
     band.connect(windGain);
     windGain.connect(bus);
     wind.start();
     nodes.push({ stop: () => wind.stop() }, { stop: () => sweep.stop() });
+
+    // WARM AIR — the same noise through a narrower band in the lower-middle,
+    // breathing on its own seventeen-second clock. Noise, not a chord: warmth
+    // from sustained tones is how the hum got in last time.
+    const warm = ac.createBufferSource();
+    warm.buffer = noiseBuffer(ac);
+    warm.loop = true;
+    const warmBand = ac.createBiquadFilter();
+    warmBand.type = 'bandpass';
+    warmBand.frequency.value = 250;
+    warmBand.Q.value = 1.6;
+    const warmGain = ac.createGain();
+    warmGain.gain.value = 0.22;
+    const warmSwell = ac.createOscillator();
+    const warmDepth = ac.createGain();
+    warmSwell.frequency.value = 1 / 17;
+    warmDepth.gain.value = 0.16;
+    warmSwell.connect(warmDepth);
+    warmDepth.connect(warmGain.gain);
+    warmSwell.start();
+    warm.connect(warmBand);
+    warmBand.connect(warmGain);
+    warmGain.connect(bus);
+    warm.start();
+    nodes.push({ stop: () => warm.stop() }, { stop: () => warmSwell.stop() });
 
     /**
      * Distant sheen. Two partials near the threshold of hearing, each
@@ -191,8 +225,8 @@ export const startCalmBed = (): void => {
       nodes.push({ stop: () => osc.stop() }, { stop: () => lfo.stop() });
     };
 
-    shimmer(587.33, 0.012, 23); // D5
-    shimmer(880, 0.008, 37);    // A5
+    shimmer(523.25, 0.010, 23); // C5
+    shimmer(880, 0.007, 37);    // A5, a major sixth above it
 
     // The breath: one slow swell every ten seconds, across the whole bed.
     const lfo = ac.createOscillator();
