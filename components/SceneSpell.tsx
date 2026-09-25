@@ -6,10 +6,18 @@
 // callback has just said the thing at the centre is a person, so the next
 // screen asks that person to say it in their own words.
 //
-// The mechanic is the chain message from the Wizard pulse, kept deliberately:
-// you name yourself, you put the value you landed on into a sentence, and you
-// hand the wheel to someone by name. That is what keeps the Pulse moving
+// The mechanic is the chain message from the Wizard pulse: you name yourself
+// and hand the wheel to someone by name. That is what keeps the Pulse moving
 // through the group after the room has emptied.
+//
+// There was a third field here, a sentence completing "I cast the spell of
+// <value> by...". It was the nicest idea on the screen and the wrong one for
+// the place it lives: this is the end of a two-minute thing, held one-handed,
+// often in a room with people waiting. Asking for a written sentence there
+// gets a sentence nobody meant, or nothing at all and no message sent. What
+// the chain actually needs is a name and someone to pass to, and both of
+// those are one tap of a keyboard. Rivo's word for the old version was
+// effort, which is exactly the tax a last screen must not charge.
 //
 // Two honesties that are load-bearing:
 //   - The @ names are typed by hand and are game tags, not WhatsApp mentions.
@@ -54,7 +62,6 @@ const SceneSpell: React.FC<Props> = ({ lang, rounds, onContinue }) => {
   const shown = useBeats(GAPS);
 
   const [name, setName] = useState('');
-  const [line, setLine] = useState('');
   const [tags, setTags] = useState('');
   const [copied, setCopied] = useState(false);
 
@@ -72,8 +79,6 @@ const SceneSpell: React.FC<Props> = ({ lang, rounds, onContinue }) => {
   const value = VALUE[letter];
   const call = round ? bank[letter].choices[round.choice] : '';
 
-  const ready = line.trim().length > 0;
-
   /** "Satya, Daniel" becomes "@Satya, @Daniel"; empty hands it to the group. */
   const tagList = (): string => {
     const names = tags
@@ -89,20 +94,17 @@ const SceneSpell: React.FC<Props> = ({ lang, rounds, onContinue }) => {
       letter,
       value,
       call,
-      line: line.trim(),
       tags: tagList(),
       url: shareUrl(),
     });
 
   const share = () => {
-    if (!ready) return;
     buzz(14);
     tap();
     window.open(`https://wa.me/?text=${encodeURIComponent(message())}`, '_blank', 'noopener');
   };
 
   const copy = async () => {
-    if (!ready) return;
     buzz(10);
     tap();
     try {
@@ -160,20 +162,6 @@ const SceneSpell: React.FC<Props> = ({ lang, rounds, onContinue }) => {
         </label>
 
         <label className="mt-6 block">
-          <span className="text-[13px] font-semibold leading-snug text-sky-100/90">
-            {c.line(value)}
-          </span>
-          <textarea
-            value={line}
-            onChange={e => setLine(e.target.value)}
-            placeholder={c.linePlaceholder}
-            rows={3}
-            maxLength={220}
-            className={`${field} resize-none`}
-          />
-        </label>
-
-        <label className="mt-6 block">
           <span className="text-[10px] font-semibold tracking-[0.28em] text-gray-500 uppercase">
             {c.tags}
           </span>
@@ -195,15 +183,9 @@ const SceneSpell: React.FC<Props> = ({ lang, rounds, onContinue }) => {
         className="mt-8 flex flex-col items-center gap-3"
       >
         <motion.button
-          whileTap={{ scale: ready ? 0.97 : 1 }}
+          whileTap={{ scale: 0.97 }}
           onClick={share}
-          disabled={!ready}
-          className={
-            'inline-flex items-center gap-2.5 rounded-full border px-6 py-3 text-[11px] font-semibold tracking-[0.22em] transition-colors duration-300 ' +
-            (ready
-              ? 'border-emerald-300/30 text-emerald-100/90 hover:border-emerald-200/60'
-              : 'border-white/[0.06] text-gray-600')
-          }
+          className="inline-flex items-center gap-2.5 rounded-full border border-emerald-300/30 px-6 py-3 text-[11px] font-semibold tracking-[0.22em] text-emerald-100/90 transition-colors duration-300 hover:border-emerald-200/60"
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
             <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z" />
@@ -212,20 +194,14 @@ const SceneSpell: React.FC<Props> = ({ lang, rounds, onContinue }) => {
         </motion.button>
 
         <motion.button
-          whileTap={{ scale: ready ? 0.97 : 1 }}
+          whileTap={{ scale: 0.97 }}
           onClick={copy}
-          disabled={!ready}
-          className={
-            'rounded-full border px-6 py-2.5 text-[10px] font-semibold tracking-[0.24em] transition-colors duration-300 ' +
-            (ready
-              ? 'border-white/15 text-gray-400 hover:border-white/35 hover:text-[#EDE7DA]'
-              : 'border-white/[0.06] text-gray-600')
-          }
+          className="rounded-full border border-white/15 px-6 py-2.5 text-[10px] font-semibold tracking-[0.24em] text-gray-400 transition-colors duration-300 hover:border-white/35 hover:text-[#EDE7DA]"
         >
           {copied ? c.copied : c.copy}
         </motion.button>
 
-        <p className="mt-2 text-[11px] leading-relaxed text-gray-600">{ready ? c.note : c.hint}</p>
+        <p className="mt-2 text-[11px] leading-relaxed text-gray-600">{c.note}</p>
       </motion.div>
 
       <Continue show={shown >= 5} label={c.cta} onClick={onContinue} />

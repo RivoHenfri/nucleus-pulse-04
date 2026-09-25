@@ -46,8 +46,7 @@ export const VALUE: Record<Letter, string> = {
  * WhatsApp renders the asterisks as bold, so the letter is lit in the thread
  * itself rather than only inside the app.
  */
-const optics = (letter: string): string =>
-  LETTERS.map(l => (l === letter ? `*${l}*` : l)).join(' · ');
+const optics = (letter: string): string => `${LETTERS.join('')} — *${letter}*`;
 
 export interface Scenario {
   situation: string;
@@ -156,16 +155,13 @@ const EN = {
   },
   spell: {
     eyebrow: 'ONE LAST THING',
-    title: 'Now cast it.',
+    title: 'Pass it on.',
     intro: (value: string) =>
-      `The wheel gave you ${value}. Say what that looks like when you do it — in your own words — and hand the wheel to someone else.`,
+      `The wheel gave you ${value}. Put your name to it and hand the wheel to whoever goes next.`,
     name: 'Your name',
     namePlaceholder: 'e.g. Tole',
-    line: (value: string) => `“I cast the spell of ${value} by…”`,
-    linePlaceholder: 'e.g. making the call when the owner is away…',
     tags: 'Tag your fellow Nucleus (optional)',
     tagsPlaceholder: 'e.g. Satya, Daniel, Muis',
-    hint: 'Write your line to send it.',
     share: 'SEND TO THE PULSE THREAD',
     copy: 'COPY THE MESSAGE',
     copied: 'COPIED',
@@ -178,17 +174,14 @@ const EN = {
       letter: string;
       value: string;
       call: string;
-      line: string;
       tags: string;
       url: string;
     }) =>
       `◉ NUCLEUS · PULSE 04 — THE WHEEL\n\n` +
       `${optics(p.letter)}\n` +
       `At the centre of the Nucleus: our six.\n\n` +
-      `The wheel handed me ${p.letter}, so ${p.value} is the one I carry.\n` +
+      `✨ *${p.name}* drew ${p.letter} — ${p.value}.\n` +
       `When it came up I chose to: “${p.call}”\n\n` +
-      `✨ *${p.name}* casts the spell of ${p.value} by…\n` +
-      `“${p.line}”\n\n` +
       `🪄 ${p.tags} — your turn at the wheel. Reply here with yours and keep OPTICS going.\n` +
       `Find what matters. Decide what moves.\n` +
       `👉 ${p.url}`,
@@ -251,16 +244,13 @@ const ID: Copy = {
   },
   spell: {
     eyebrow: 'SATU HAL TERAKHIR',
-    title: 'Sekarang ucapkan.',
+    title: 'Teruskan.',
     intro: (value: string) =>
-      `Roda memberimu ${value}. Katakan seperti apa bentuknya saat kamu menjalankannya — dengan kalimatmu sendiri — lalu serahkan rodanya ke orang lain.`,
+      `Roda memberimu ${value}. Bubuhkan namamu, lalu serahkan rodanya ke orang berikutnya.`,
     name: 'Namamu',
     namePlaceholder: 'contoh: Tole',
-    line: (value: string) => `“Aku mengucapkan mantra ${value} dengan…”`,
-    linePlaceholder: 'contoh: mengambil keputusan saat pemiliknya tidak ada…',
     tags: 'Tandai rekan Nucleus-mu (opsional)',
     tagsPlaceholder: 'contoh: Satya, Daniel, Muis',
-    hint: 'Tulis kalimatmu dulu untuk mengirim.',
     share: 'KIRIM KE THREAD PULSE',
     copy: 'SALIN PESANNYA',
     copied: 'TERSALIN',
@@ -273,18 +263,15 @@ const ID: Copy = {
       letter: string;
       value: string;
       call: string;
-      line: string;
       tags: string;
       url: string;
     }) =>
       `◉ NUCLEUS · PULSE 04 — THE WHEEL\n\n` +
       `${optics(p.letter)}\n` +
       `Di pusat Nucleus: enam nilai kita.\n\n` +
-      `Roda memberi saya ${p.letter}, jadi ${p.value} yang saya bawa.\n` +
+      `✨ *${p.name}* dapat ${p.letter} — ${p.value}.\n` +
       `Waktu itu muncul, saya memilih: “${p.call}”\n\n` +
-      `✨ *${p.name}* mengucapkan mantra ${p.value} dengan…\n` +
-      `“${p.line}”\n\n` +
-      `🪄 ${p.tags} — giliran kalian di roda. Balas pesan ini dengan mantramu, sambung OPTICS-nya.\n` +
+      `🪄 ${p.tags} — giliran kalian di roda. Balas pesan ini, sambung OPTICS-nya.\n` +
       `Temukan yang penting. Putuskan yang bergerak.\n` +
       `👉 ${p.url}`,
   },
