@@ -9,7 +9,15 @@ four September Pulses (SIGNAL → TRUTH → ORBIT → NUCLEUS). Built from
     SPIN → SITUATION → CHOOSE → MOVE ON → REVEAL
 
 Spin the OPTICS wheel, face a realistic workplace tension, make a call, move
-on. One spin per person. Only at the end does the app
+on. One spin per turn, and three turns per phone — enough to start over after
+a typo or a message sent to the wrong thread, not enough to keep spinning
+until the answer is one you like. `?again` on the URL resets a phone for the
+next person, and resets its letter deck with it.
+
+The letter is dealt from a shuffled deck held on the phone, so every letter
+comes up once before any letter comes up twice and the same value never
+arrives twice in a row. The three choices under each situation are shuffled
+on every round, so no option is always in the same place. Only at the end does the app
 reveal what was underneath the decisions: values → behavior → culture →
 human judgment.
 
@@ -22,7 +30,7 @@ human judgment.
 | REVEAL | The letters fall into the Nucleus, open into the six values, and the orbit comes back as a helix ring. *Repeated choices become behavior. Behavior becomes culture.* |
 | CALLBACK | SIGNAL / TRUTH / ORBIT / NUCLEUS, then *HUMAN JUDGMENT.* |
 | SPELL | The one screen the participant writes on. Name, one line — *I cast the spell of \<value\> by…* — and the names of whoever spins next, turned into a chain message for the WhatsApp thread. The @ names are game tags; a wa.me link cannot make WhatsApp notify anyone, and the screen says so rather than letting people think they tagged a colleague who never heard about it. |
-| FINAL | *Find what matters. Decide what moves.* Then it loops back to the opening by itself after 22 s, ready for the next person. |
+| FINAL | *Find what matters. Decide what moves.* With turns left it offers START OVER and loops by itself after 22 s, ready for the next person. On the third turn it stays put: a phone that can be spun for ever is not a wheel that decided anything. |
 
 ## The room
 
@@ -65,6 +73,12 @@ Everything is Web Audio, no files, and deliberately relaxing:
   sustained pitch on purpose: the first version was a stack of sines, and on a
   phone speaker — where nothing below 200 Hz survives — all that reached the
   room was a steady nasal hum.
+- **Drive** — the one place with a beat, and only while the wheel turns: kick
+  on every beat at 124 BPM, hats on the off-beats thinning out as it slows,
+  and a riser that grows as it slows so it peaks as the letter lands. The
+  landing is the drop — everything cuts, and the singing bowl is what is left.
+  Afterwards the bed opens from 0.075 to 0.105 over eight seconds, because a
+  bed that followed that beat at its old level read as silence.
 - **Voice** — pre-rendered with `openai/gpt-audio-mini` (voice `alloy`, same
   as PULSE 02), calmer direction. Situations are spoken; a participant's own
   choices and their own spell are never read aloud.
@@ -85,6 +99,14 @@ npm run build    # dist/, base /nucleus-pulse-04/ for GitHub Pages
 
 In dev only, `?scene=wheel|reveal|callback|spell|final` opens a scene
 with stand-in rounds for re-timing.
+
+## The link preview
+
+`public/brand/og.png` is the card WhatsApp shows when the spell is shared.
+1200×630 PNG — not the webp the app uses for its logo, which WhatsApp's
+crawler will not render. `og:image` has to be an absolute URL or no image
+appears at all, and WhatsApp caches the preview per URL, so a new card will
+not show in a thread that already has the old one.
 
 ## Tech
 

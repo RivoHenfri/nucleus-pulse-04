@@ -33,6 +33,22 @@ export const VALUE: Record<Letter, string> = {
   S: 'Sustainability',
 };
 
+/**
+ * The six letters with one of them lit: `O · P · *T* · I · C · S`.
+ *
+ * A message that named only the sender's own letter read as a form someone had
+ * filled in: a value, a sentence, a signature, done. Rivo's word for it was
+ * stiff, and the reason is that it left out the thing the Pulse is actually
+ * about — what sits at the centre of the Nucleus is not your letter, it is all
+ * six. Showing the whole word with your letter lit says "one of six, and the
+ * six belong together" without a sentence having to explain it.
+ *
+ * WhatsApp renders the asterisks as bold, so the letter is lit in the thread
+ * itself rather than only inside the app.
+ */
+const optics = (letter: string): string =>
+  LETTERS.map(l => (l === letter ? `*${l}*` : l)).join(' · ');
+
 export interface Scenario {
   situation: string;
   /** Always three, in the playbook's order. The screen shuffles them. */
@@ -167,11 +183,13 @@ const EN = {
       url: string;
     }) =>
       `◉ NUCLEUS · PULSE 04 — THE WHEEL\n\n` +
-      `The wheel gave me *${p.letter} — ${p.value}*.\n` +
-      `The call I made: “${p.call}”\n\n` +
+      `${optics(p.letter)}\n` +
+      `At the centre of the Nucleus: our six.\n\n` +
+      `The wheel handed me ${p.letter}, so ${p.value} is the one I carry.\n` +
+      `When it came up I chose to: “${p.call}”\n\n` +
       `✨ *${p.name}* casts the spell of ${p.value} by…\n` +
       `“${p.line}”\n\n` +
-      `🪄 Next to spin the wheel: ${p.tags}\n` +
+      `🪄 ${p.tags} — your turn at the wheel. Reply here with yours and keep OPTICS going.\n` +
       `Find what matters. Decide what moves.\n` +
       `👉 ${p.url}`,
   },
@@ -189,8 +207,10 @@ const EN = {
   final: {
     lines: ['Find what matters.', 'Decide what moves.'],
     ours: 'Our values. Our culture.',
-    again: 'NEXT PERSON',
-    looping: 'Starting over for the next person',
+    again: 'START OVER',
+    againLeft: (n: number) => `START OVER  ·  ${n} left`,
+    looping: 'Starting over',
+    spent: 'Three turns is all a phone gets. Enough to start over if something went wrong, not enough to keep spinning until you like the answer.',
   },
 };
 
@@ -258,11 +278,13 @@ const ID: Copy = {
       url: string;
     }) =>
       `◉ NUCLEUS · PULSE 04 — THE WHEEL\n\n` +
-      `Roda memberi saya *${p.letter} — ${p.value}*.\n` +
-      `Keputusan yang saya ambil: “${p.call}”\n\n` +
+      `${optics(p.letter)}\n` +
+      `Di pusat Nucleus: enam nilai kita.\n\n` +
+      `Roda memberi saya ${p.letter}, jadi ${p.value} yang saya bawa.\n` +
+      `Waktu itu muncul, saya memilih: “${p.call}”\n\n` +
       `✨ *${p.name}* mengucapkan mantra ${p.value} dengan…\n` +
       `“${p.line}”\n\n` +
-      `🪄 Giliran memutar roda berikutnya: ${p.tags}\n` +
+      `🪄 ${p.tags} — giliran kalian di roda. Balas pesan ini dengan mantramu, sambung OPTICS-nya.\n` +
       `Temukan yang penting. Putuskan yang bergerak.\n` +
       `👉 ${p.url}`,
   },
@@ -280,8 +302,10 @@ const ID: Copy = {
   final: {
     lines: ['Temukan yang penting.', 'Putuskan yang bergerak.'],
     ours: 'Nilai kita. Budaya kita.',
-    again: 'ORANG BERIKUTNYA',
-    looping: 'Mulai lagi untuk orang berikutnya',
+    again: 'ULANG DARI AWAL',
+    againLeft: (n: number) => `ULANG DARI AWAL  ·  sisa ${n}`,
+    looping: 'Mulai lagi',
+    spent: 'Satu HP dapat tiga kali. Cukup untuk mengulang kalau ada yang salah, tidak cukup untuk memutar terus sampai jawabannya kamu suka.',
   },
 };
 

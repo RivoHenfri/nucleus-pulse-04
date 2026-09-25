@@ -122,9 +122,11 @@ const pump = () => {
   }
 
   const mine = ++generation;
+  let moved = false;
   const next = () => {
     // Anything from a clip we have already moved past is not our business.
-    if (mine !== generation) return;
+    if (mine !== generation || moved) return;
+    moved = true;
     speaking = false;
     // Let the room back in. If another line follows immediately it will duck
     // again before this has risen far, which is what makes a run of short
@@ -166,6 +168,43 @@ const pump = () => {
           onTrouble?.('silent');
         }
       }, 900),
+    );
+
+    // THE WATCHDOG — a backstop, not a fix for anything yet observed.
+    //
+    // Every path out of a clip that has been seen in practice is already
+    // covered: it ends and onended fires, or play() rejects and the catch
+    // moves on. What is not covered is a play() that neither resolves nor
+    // rejects while onended never fires — a device with no audio output, a
+    // file that stalls mid-fetch, a tab the browser has throttled. In that
+    // case `speaking` stays true for ever and every whenQuiet() waiter is
+    // held, so a screen waiting for the voice never offers its button. The
+    // opening screen would fail worst: SPIN at opacity zero and no way to
+    // start the Pulse.
+    //
+    // Worth being exact about why this is here. It was written while chasing
+    // an opening screen that appeared stuck, and it was not the cause — the
+    // narration was simply running long (about eighteen seconds now that the
+    // welcome is nearly six) and the check was made too early. The queue was
+    // healthy throughout. The hole it guards is real all the same, and a run
+    // that strands a room full of people is not a thing to leave uncovered
+    // because it has not happened yet.
+    //
+    // Two timers rather than one, because the two failures look different. A
+    // clip still at zero after two seconds never started, so there is nothing
+    // to wait for. A clip that did start gets the hard cap, which is only
+    // there for one that lies about its duration.
+    pending.push(
+      setTimeout(() => {
+        if (mine !== generation || moved) return;
+        if (audio.currentTime <= 0.05) next();
+      }, 2000),
+    );
+    pending.push(
+      setTimeout(() => {
+        if (mine !== generation || moved) return;
+        next();
+      }, MAX_CLIP_MS),
     );
   } catch {
     if (text) speak(text);
@@ -211,6 +250,14 @@ let onTrouble: ((why: 'blocked' | 'silent') => void) | null = null;
 export const onAudioTrouble = (cb: (why: 'blocked' | 'silent') => void): void => {
   onTrouble = cb;
 };
+
+/**
+ * The longest any one line is allowed to hold the run.
+ *
+ * The longest rendered line is under ten seconds, so this is a backstop and
+ * never a limit the experience meets in normal use.
+ */
+const MAX_CLIP_MS = 15000;
 
 /** Cleared once anything is confirmed audible. */
 let provenAudible = false;

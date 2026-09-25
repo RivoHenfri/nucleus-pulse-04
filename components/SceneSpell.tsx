@@ -27,7 +27,7 @@
 
 import { motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
-import { COPY, VALUE, type Lang } from '../i18n';
+import { COPY, LETTERS, VALUE, type Lang } from '../i18n';
 import type { Round } from '../types';
 import { hush, narrate } from '../utils/narration';
 import { buzz, tap } from '../utils/sound';
@@ -127,6 +127,19 @@ const SceneSpell: React.FC<Props> = ({ lang, rounds, onContinue }) => {
 
       <Beat show={shown >= 3} className="mt-3">
         <p className="text-[14px] leading-relaxed text-gray-400">{c.intro(value)}</p>
+      </Beat>
+
+      {/* The six, with yours lit. The same thing the shared message shows, for
+          the same reason: what is at the centre of the Nucleus is not your
+          letter, it is all of them. */}
+      <Beat show={shown >= 3} className="mt-6">
+        <p className="text-[15px] font-semibold tracking-[0.42em] text-gray-600">
+          {LETTERS.map(l => (
+            <span key={l} className={l === letter ? 'text-sky-100' : undefined}>
+              {l}
+            </span>
+          ))}
+        </p>
       </Beat>
 
       <Beat show={shown >= 4} className="mt-8 text-left">

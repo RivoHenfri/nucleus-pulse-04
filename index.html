@@ -5,6 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#06080B" />
     <title>PULSE 04 — NUCLEUS · Wheel</title>
+
+    <!--
+      The link preview, for the thread the spell is shared into. Without these
+      the Pulse arrives in WhatsApp as a bare grey URL, which is a poor thing to
+      pass around a company when the whole mechanic is people passing it around.
+
+      Notes that are easy to get wrong here:
+        * og:image must be an absolute URL. A relative path resolves against the
+          crawler, not the page, and silently yields no image at all.
+        * It is a PNG, not the webp the app itself uses for the logo — WhatsApp's
+          crawler does not reliably render webp, and a preview that works on your
+          phone but not on someone else's is worse than none.
+        * 1200x630 is the ratio every chat app crops from, and staying under a
+          few hundred KB is what keeps the preview from being dropped.
+        * WhatsApp caches a preview per URL. If this card is ever changed, the
+          thread will keep showing the old one until the cache expires.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="NUCLEUS PULSE" />
+    <meta property="og:title" content="NUCLEUS PULSE 04 — THE WHEEL" />
+    <meta
+      property="og:description"
+      content="Spin the OPTICS wheel, face a real decision, and see what was guiding it. Two minutes, on your phone."
+    />
+    <meta property="og:url" content="https://rivohenfri.github.io/nucleus-pulse-04/" />
+    <meta property="og:image" content="https://rivohenfri.github.io/nucleus-pulse-04/brand/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The Nucleus mark beside the words PULSE 04 — THE WHEEL and the six letters O P T I C S." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/png" href="brand/og.png" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

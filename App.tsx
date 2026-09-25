@@ -22,7 +22,9 @@ import React, { useEffect, useState } from 'react';
 import { COPY, type Lang } from './i18n';
 import { ROUNDS, type Round, type SceneId } from './types';
 import { liftCalmBed, setAmbienceEnabled, startCalmBed, stopCalmBed } from './utils/ambience';
+import { forgetLetters } from './utils/spread';
 import { hush, onAudioTrouble, setNarrationEnabled, setNarrationLang } from './utils/narration';
+import { consumeResetLink, usePlay } from './utils/plays';
 import { joinRoom, submitToRoom } from './utils/room';
 import { setEffectsEnabled, unlockWebAudio } from './utils/sound';
 import { setVoiceEnabled, silence } from './utils/voice';
@@ -117,6 +119,12 @@ const App: React.FC = () => {
     joinRoom();
   }, []);
 
+  // ?again hands the phone to the next person: turns reset, and the letter
+  // deck with them, so they do not inherit a half-dealt hand.
+  useEffect(() => {
+    if (consumeResetLink()) forgetLetters();
+  }, []);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [scene]);
@@ -154,6 +162,9 @@ const App: React.FC = () => {
 
   const chosen = (round: Round) => {
     const next = [...rounds, round];
+    // A turn is spent when the wheel has decided something, not when the app
+    // was opened — a phone that was picked up and put down has not played.
+    usePlay();
     // Into the room, if there is one — in the background, never in the way.
     void submitToRoom({ lang, letter: round.letter, choice: round.choice });
     setRounds(next);

@@ -16,6 +16,7 @@ import { motion } from 'motion/react';
 import React, { useEffect, useState } from 'react';
 import { COPY, LETTERS, type Lang } from '../i18n';
 import { hush, narrate, whenQuiet } from '../utils/narration';
+import { playsLeft } from '../utils/plays';
 import { Beat, Continue, Stage, useBeats } from './atoms';
 import NucleusLogo from './NucleusLogo';
 
@@ -34,6 +35,13 @@ const SceneFinal: React.FC<Props> = ({ lang, onLoop }) => {
   const c = COPY[lang].final;
   const shown = useBeats(GAPS);
   const [counting, setCounting] = useState(false);
+  /**
+   * Read once, on arrival. Three turns per phone, and the third one ends here
+   * rather than rolling back to the opening: a wheel you can keep spinning
+   * stops being a wheel that decided anything.
+   */
+  const [left] = useState(playsLeft);
+  const spent = left <= 0;
 
   useEffect(() => {
     narrate('final-1', 3700);
@@ -51,11 +59,14 @@ const SceneFinal: React.FC<Props> = ({ lang, onLoop }) => {
   }, [shown]);
 
   useEffect(() => {
-    if (!counting) return;
+    // A spent phone stays on this screen. The auto-loop exists so a shared
+    // phone is ready for the next person; looping someone back to an opening
+    // they can no longer act on would only be an invitation to nothing.
+    if (!counting || spent) return;
     const t = setTimeout(onLoop, LOOP_MS);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [counting]);
+  }, [counting, spent]);
 
   return (
     <Stage glow>
@@ -77,11 +88,17 @@ const SceneFinal: React.FC<Props> = ({ lang, onLoop }) => {
         <p className="text-[14px] tracking-[0.12em] text-gray-400">{c.ours}</p>
       </Beat>
 
-      <Continue show={counting} label={c.again} onClick={onLoop} />
+      {spent ? (
+        <Beat show={counting} className="mt-12">
+          <p className="mx-auto max-w-xs text-[13px] leading-relaxed text-gray-500">{c.spent}</p>
+        </Beat>
+      ) : (
+        <Continue show={counting} label={c.againLeft(left)} onClick={onLoop} />
+      )}
 
       <motion.div
         initial={false}
-        animate={{ opacity: counting ? 1 : 0 }}
+        animate={{ opacity: counting && !spent ? 1 : 0 }}
         transition={{ duration: 1.5, delay: 2 }}
         className="mx-auto mt-8 w-60"
       >
@@ -90,7 +107,7 @@ const SceneFinal: React.FC<Props> = ({ lang, onLoop }) => {
           <motion.div
             className="h-full bg-sky-200/40"
             initial={{ width: '0%' }}
-            animate={{ width: counting ? '100%' : '0%' }}
+            animate={{ width: counting && !spent ? '100%' : '0%' }}
             transition={{ duration: counting ? LOOP_MS / 1000 : 0, ease: 'linear' }}
           />
         </div>
