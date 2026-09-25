@@ -80,8 +80,8 @@ const SceneFinal: React.FC<Props> = ({ lang, onLoop }) => {
       </Beat>
 
       <Beat show={shown >= 4} className="mt-10">
-        <p className="text-[15px] font-semibold tracking-[0.5em] text-sky-100/90">
-          {LETTERS.join(' · ')}
+        <p className="text-[17px] font-semibold tracking-[0.34em] text-sky-100/90">
+          {LETTERS.join('')}
         </p>
       </Beat>
       <Beat show={shown >= 5} className="mt-4">

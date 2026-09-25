@@ -3,21 +3,19 @@
   "note": "Voice: alloy, the same voice as PULSE 02, so the September Pulses sound like one person. PULSE 04 is the lightest of the four. The register that kept coming back and had to be written out of the direction is the announcer - Rivo's words were that it sounded like a flag ceremony. Short declarative lines invite that cadence, so the direction now forbids it explicitly rather than only asking for warmth. The situations are spoken because they are the same for everybody. The three choices and the participant's own spell are never spoken: a voice reading someone their own decisions back turns a mirror into a report.",
   "direction": {
     "_": "Talk to ONE person sitting across a table, like a colleague you like. Conversational and easy, a little informal, a smile in it. This is the opposite of an announcer: no ceremonial cadence, no proclaiming, no dramatic pause between short sentences, no weight dropped onto the last word of a line. Do not over-enunciate and do not slow down for emphasis - let short lines run lightly and join them the way speech does. Never solemn, never grand. Say only the script and stop immediately after its last word; add nothing, continue nothing.",
-    "enter": "Light and easy, like starting a chat. Do not announce it. Stop right after the last word.",
+    "enter": "Light and easy, an invitation. Do not announce it. Stop right after the last word.",
     "wheel": "Relaxed and friendly, and in no hurry - an invitation, not a prompt. Let the sentence have its own room; do not throw it away or run it together. Stop right after the last word.",
     "sit": "Just telling a colleague about a normal workday. Relaxed, a bit throwaway, never weighty. Neutral: nothing in the tone may hint at which way to decide.",
     "reveal": "Thinking out loud with someone, mildly delighted at where it lands. Never preachy, never a lesson.",
     "callback": "Quiet and matter-of-fact, like saying something you both already know. Warm, not grand.",
     "spell": "An easy offer, like sliding something across the table. Unhurried, friendly. Stop right after the last word.",
     "final": "Warm and light, a soft smile, like ending a good conversation. Not a closing statement.",
-    "welcome": "Relaxed and friendly. Say the six letters calmly and plainly - reading them out, not proclaiming them. Stop right after the last word."
+    "welcome": "Relaxed and friendly, like saying a name you use every day. OPTICS is one word - say it as a word, never letter by letter and never spelled out. Stop right after the last word."
   },
   "languages": {
     "en": {
-      "welcome": "Welcome to the Nucleus Wheel. O. P. T. I. C. S. Our values.",
-      "enter-1": "Things move.",
-      "enter-2": "Context changes.",
-      "enter-3": "Decisions still happen.",
+      "welcome": "Welcome to the last Pulse. Nucleus. OPTICS. Our values.",
+      "enter-1": "Please spin the wheel.",
       "wheel": "Spin when you're ready.",
       "sit-O": "A decision is waiting. The person who normally owns it is unavailable. The team can move if someone makes the call.",
       "sit-P": "The current process works, but it keeps creating the same friction. A new approach could help, but it has not been tested here.",
@@ -38,10 +36,8 @@
       "spell": "Now you can share this."
     },
     "id": {
-      "welcome": "Selamat datang di Nucleus Wheel. O. P. T. I. C. S. Nilai-nilai kita.",
-      "enter-1": "Segala hal bergerak.",
-      "enter-2": "Konteks berubah.",
-      "enter-3": "Keputusan tetap terjadi.",
+      "welcome": "Selamat datang di Pulse terakhir. Nucleus. OPTICS. Nilai-nilai kita.",
+      "enter-1": "Silakan putar rodanya.",
       "wheel": "Putar kalau kamu sudah siap.",
       "sit-O": "Sebuah keputusan sedang menunggu. Orang yang biasanya memegangnya sedang tidak ada. Tim bisa jalan kalau ada yang mengambil keputusan.",
       "sit-P": "Proses yang sekarang berjalan, tapi terus menimbulkan hambatan yang sama. Cara baru bisa membantu, tapi belum pernah diuji di sini.",

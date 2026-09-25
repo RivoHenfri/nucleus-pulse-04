@@ -34,8 +34,13 @@ interface Props {
 /** The mark takes this long to light before anything is asked of anyone. */
 const IGNITION_MS = cue(4200);
 
-// welcome · letters · our values · line · line · line · button
-const GAPS = beats(1100, 1700, 2200, 3000, 2000, 2000, 2000);
+// welcome · OPTICS · our values · invite · button
+//
+// The three lines that used to sit here — things move, context changes,
+// decisions still happen — were the Pulse explaining itself before anything
+// had happened. The wheel makes that point by being spun, so the opening now
+// says who this is and asks for the spin.
+const GAPS = beats(1100, 1700, 2200, 2600, 1800);
 
 const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
   const c = COPY[lang].enter;
@@ -61,9 +66,7 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
     setNarrationLang(next);
     setStarted(true);
     narrate('welcome', cue(1100));
-    narrate('enter-1', cue(8000));
-    narrate('enter-2', cue(10000));
-    narrate('enter-3', cue(12000));
+    narrate('enter-1', cue(7600));
   };
 
   /** The button waits for the last line to finish being spoken. */
@@ -132,8 +135,11 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
               <p className="font-display text-[24px] leading-[1.35] text-[#EDE7DA]">{c.welcome}</p>
             </Beat>
             <Beat show={shown >= 2} className="mt-5">
-              <p className="text-[17px] font-semibold tracking-[0.5em] text-sky-100/90">
-                {LETTERS.join(' · ')}
+              {/* One word, not six letters. Spelled out with separators it reads
+                  as an initialism being dictated; joined, it reads as the name
+                  of the thing the company actually calls its values. */}
+              <p className="text-[19px] font-semibold tracking-[0.34em] text-sky-100/90">
+                {LETTERS.join('')}
               </p>
             </Beat>
             <Beat show={shown >= 3} className="mt-3">
@@ -141,13 +147,7 @@ const SceneEnter: React.FC<Props> = ({ lang, onChooseLang, onSpin }) => {
             </Beat>
 
             <Beat show={shown >= 4} className="mt-9">
-              <p className="font-display text-[21px] leading-[1.4] text-[#EDE7DA]">{c.lines[0]}</p>
-            </Beat>
-            <Beat show={shown >= 5}>
-              <p className="font-display text-[21px] leading-[1.4] text-[#EDE7DA]/85">{c.lines[1]}</p>
-            </Beat>
-            <Beat show={shown >= 6}>
-              <p className="font-display text-[21px] leading-[1.4] text-[#EDE7DA]/70">{c.lines[2]}</p>
+              <p className="font-display text-[21px] leading-[1.4] text-[#EDE7DA]">{c.invite}</p>
             </Beat>
 
             <Continue show={shown >= GAPS.length && spoken} label={c.cta} onClick={onSpin} tone="solid" />

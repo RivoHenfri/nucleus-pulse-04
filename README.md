@@ -25,7 +25,7 @@ human judgment.
 
 | Scene | What happens |
 |-------|--------------|
-| OPENING | The Nucleus mark ignites (same as PULSE 02). Language. *Welcome to the NUCLEUS Wheel. O · P · T · I · C · S. Our values.* Then *Things move. Context changes. Decisions still happen.* SPIN. |
+| OPENING | The Nucleus mark ignites (same as PULSE 02). Language. *Welcome to the last Pulse. NUCLEUS. OPTICS. Our values.* Then *Please spin the wheel.* SPIN. OPTICS is set and spoken as one word, never spelled out, and the three lines that used to explain the Pulse before anything had happened are gone — the wheel makes that point by being spun. |
 | WHEEL ×1 | O · P · T · I · C · S orbit the Nucleus. Wind-up → accelerate → long settle → snap. The letter picks a situation; three plausible choices; captured silently. |
 | REVEAL | The letters fall into the Nucleus, open into the six values, and the orbit comes back as a helix ring. *Repeated choices become behavior. Behavior becomes culture.* |
 | CALLBACK | SIGNAL / TRUTH / ORBIT / NUCLEUS, then *HUMAN JUDGMENT.* |

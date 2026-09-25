@@ -132,9 +132,9 @@ const EN = {
   enter: {
     brand: 'NUCLEUS PULSE',
     pulse: '04 — NUCLEUS',
-    lines: ['Things move.', 'Context changes.', 'Decisions still happen.'],
-    welcome: 'Welcome to the NUCLEUS Wheel.',
+    welcome: 'Welcome to the last Pulse. NUCLEUS.',
     values: 'Our values.',
+    invite: 'Please spin the wheel.',
     cta: 'SPIN',
   },
   wheel: {
@@ -227,9 +227,9 @@ const ID: Copy = {
   enter: {
     brand: 'NUCLEUS PULSE',
     pulse: '04 — NUCLEUS',
-    lines: ['Segala hal bergerak.', 'Konteks berubah.', 'Keputusan tetap terjadi.'],
-    welcome: 'Selamat datang di NUCLEUS Wheel.',
+    welcome: 'Selamat datang di Pulse terakhir. NUCLEUS.',
     values: 'Nilai-nilai kita.',
+    invite: 'Silakan putar rodanya.',
     cta: 'PUTAR',
   },
   wheel: {
