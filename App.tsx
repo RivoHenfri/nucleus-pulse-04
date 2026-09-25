@@ -2,7 +2,7 @@
 //
 // SPIN → SITUATION → CHOOSE → MOVE ON → REVEAL
 //
-//   enter → wheel ×1 → pulseback → reveal → callback → final → (loop) enter
+//   enter → wheel ×1 → pulseback → reveal → callback → spell → final → (loop) enter
 //
 // One spin per person. The Pulse Back, with its WhatsApp button, comes
 // straight after the choice, so whoever leaves for WhatsApp has already
@@ -30,6 +30,7 @@ import SceneEnter from './components/SceneEnter';
 import SceneFinal from './components/SceneFinal';
 import ScenePulseBack from './components/ScenePulseBack';
 import SceneReveal from './components/SceneReveal';
+import SceneSpell from './components/SceneSpell';
 import SceneWheel from './components/SceneWheel';
 
 const STORE_KEY = 'nucleus.pulse04';
@@ -217,7 +218,11 @@ const App: React.FC = () => {
             <ScenePulseBack lang={lang} rounds={rounds} onContinue={go('reveal')} />
           )}
 
-          {scene === 'callback' && <SceneCallback lang={lang} onContinue={go('final')} />}
+          {scene === 'callback' && <SceneCallback lang={lang} onContinue={go('spell')} />}
+
+          {scene === 'spell' && (
+            <SceneSpell lang={lang} rounds={rounds} onContinue={go('final')} />
+          )}
 
           {scene === 'final' && <SceneFinal lang={lang} onLoop={loop} />}
         </motion.div>
