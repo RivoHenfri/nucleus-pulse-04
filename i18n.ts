@@ -272,7 +272,7 @@ const ID: Copy = {
       `✨ *${p.name}* dapat ${p.letter} — ${p.value}.\n` +
       `Waktu situasinya muncul, saya memilih: “${p.call}”\n\n` +
       `🪄 ${p.tags} — giliran kalian di roda. Balas pesan ini, sambung OPTICS-nya.\n` +
-      `Temukan yang penting. Putuskan yang bergerak.\n` +
+      `Tentukan yang penting. Jalankan yang perlu.\n` +
       `👉 ${p.url}`,
   },
   callback: {
@@ -287,7 +287,7 @@ const ID: Copy = {
     judgment: 'HUMAN JUDGMENT.',
   },
   final: {
-    lines: ['Temukan yang penting.', 'Putuskan yang menggerakkan.'],
+    lines: ['Tentukan yang penting.', 'Jalankan yang perlu.'],
     ours: 'Nilai kita. Budaya kita.',
     again: 'ULANG DARI AWAL',
     againLeft: (n: number) => `ULANG DARI AWAL  ·  sisa ${n}`,
