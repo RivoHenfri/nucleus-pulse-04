@@ -90,33 +90,33 @@ const EN_BANK: Record<Letter, Scenario> = {
 const ID_BANK: Record<Letter, Scenario> = {
   O: {
     situation:
-      'Sebuah keputusan sedang menunggu. Orang yang biasanya memegangnya sedang tidak ada. Tim bisa jalan kalau ada yang mengambil keputusan.',
-    choices: ['Ambil keputusan', 'Tunggu pemiliknya', 'Minta pandangan lain'],
+      'Ada keputusan yang harus diambil. PIC-nya sedang tidak ada. Tim bisa jalan kalau ada yang mau mengambilnya.',
+    choices: ['Ambil keputusannya', 'Tunggu PIC-nya', 'Tanya pendapat yang lain'],
   },
   P: {
     situation:
-      'Proses yang sekarang berjalan, tapi terus menimbulkan hambatan yang sama. Cara baru bisa membantu, tapi belum pernah diuji di sini.',
-    choices: ['Terapkan cara baru', 'Pertahankan proses sekarang', 'Uji coba kecil dulu'],
+      'Cara yang sekarang memang jalan, tapi masalahnya muncul terus. Ada cara baru yang mungkin membantu, tapi belum pernah dicoba di sini.',
+    choices: ['Pakai cara baru', 'Tetap cara sekarang', 'Coba kecil-kecilan dulu'],
   },
   T: {
     situation:
-      'Kamu sudah melihat sebuah proyek mungkin meleset. Tim masih berusaha memulihkannya. Belum ada yang pasti.',
-    choices: ['Angkat risikonya sekarang', 'Tunggu sampai lebih pasti', 'Cek dulu dengan tim'],
+      'Kamu sudah lihat proyeknya kemungkinan molor. Tim masih berusaha mengejar. Belum ada yang pasti.',
+    choices: ['Sampaikan risikonya sekarang', 'Tunggu sampai lebih jelas', 'Bicara dulu dengan tim'],
   },
   I: {
     situation:
-      'Tim sudah bergerak dengan rencana yang disepakati. Kamu melihat pendekatan lain yang mungkin lebih baik, tapi mengajukannya sekarang bisa membuka diskusi lagi.',
-    choices: ['Ajukan idenya', 'Biarkan rencana berjalan', 'Sampaikan ke pemiliknya dulu'],
+      'Tim sudah jalan dengan rencana yang disepakati. Kamu lihat cara lain yang mungkin lebih baik, tapi mengangkatnya sekarang bisa membuka diskusi lagi.',
+    choices: ['Sampaikan idenya', 'Biarkan rencananya jalan', 'Omongkan dulu ke PIC-nya'],
   },
   C: {
     situation:
-      'Dua tim tidak sepakat soal langkah berikutnya. Kamu bisa memutuskan sendiri dan bergerak lebih cepat.',
-    choices: ['Putuskan sendiri', 'Pertemukan mereka lagi', 'Minta pemiliknya memutuskan'],
+      'Dua tim beda pendapat soal langkah berikutnya. Kamu bisa saja memutuskan sendiri supaya lebih cepat.',
+    choices: ['Putuskan sendiri', 'Duduk bareng lagi', 'Serahkan ke PIC-nya'],
   },
   S: {
     situation:
-      'Perbaikan tercepat akan menyelesaikan masalah hari ini, tapi kemungkinan besar menimbulkan pekerjaan yang sama bulan depan.',
-    choices: ['Perbaiki sekarang', 'Bangun solusi jangka panjang', 'Ulur waktu dan tinjau'],
+      'Cara tercepat menyelesaikan masalah hari ini, tapi bulan depan kemungkinan besar terulang lagi.',
+    choices: ['Selesaikan sekarang', 'Kerjakan yang jangka panjang', 'Tunda dulu, tinjau nanti'],
   },
 };
 
@@ -220,33 +220,33 @@ const ID: Copy = {
   enter: {
     brand: 'NUCLEUS PULSE',
     pulse: '04 — NUCLEUS',
-    welcome: 'Selamat datang di Pulse terakhir. NUCLEUS.',
-    values: 'Nilai-nilai kita.',
-    invite: 'Silakan putar rodanya.',
+    welcome: 'Selamat datang di Pulse yang terakhir. NUCLEUS.',
+    values: 'Nilai kita.',
+    invite: 'Yuk, putar rodanya.',
     cta: 'PUTAR',
   },
   wheel: {
     cta: 'PUTAR',
     hint: 'atau ketuk rodanya',
-    ready: 'Putar kalau kamu sudah siap.',
+    ready: 'Putar kalau sudah siap.',
   },
   sit: {
     bank: ID_BANK,
   },
   reveal: {
-    made: 'Kamu sudah mengambil keputusan.',
+    made: 'Kamu barusan mengambil keputusan.',
     changed: 'Rodanya bisa berhenti di mana saja.',
-    guided: 'Tapi apa yang menuntunnya?',
+    guided: 'Tapi apa yang menuntun keputusanmu?',
     values: 'Ini bukan jawaban. Ini nilai.',
-    shape: ['Nilai tidak membuat keputusan untuk kita.', 'Nilai membentuk cara kita memutuskan.'],
-    culture: ['Pilihan yang berulang menjadi perilaku.', 'Perilaku menjadi budaya.'],
+    shape: ['Nilai tidak memutuskan untuk kita.', 'Nilai membentuk cara kita memutuskan.'],
+    culture: ['Pilihan yang diulang-ulang jadi kebiasaan.', 'Kebiasaan jadi budaya.'],
     cta: 'LANJUT',
   },
   spell: {
     eyebrow: 'SATU HAL TERAKHIR',
     title: 'Teruskan.',
     intro: (value: string) =>
-      `Roda memberimu ${value}. Bubuhkan namamu, lalu serahkan rodanya ke orang berikutnya.`,
+      `Roda memberimu ${value}. Tulis namamu, lalu serahkan rodanya ke orang berikutnya.`,
     name: 'Namamu',
     namePlaceholder: 'contoh: Tole',
     tags: 'Tandai rekan Nucleus-mu (opsional)',
@@ -270,7 +270,7 @@ const ID: Copy = {
       `${optics(p.letter)}\n` +
       `Di pusat Nucleus: enam nilai kita.\n\n` +
       `✨ *${p.name}* dapat ${p.letter} — ${p.value}.\n` +
-      `Waktu itu muncul, saya memilih: “${p.call}”\n\n` +
+      `Waktu situasinya muncul, saya memilih: “${p.call}”\n\n` +
       `🪄 ${p.tags} — giliran kalian di roda. Balas pesan ini, sambung OPTICS-nya.\n` +
       `Temukan yang penting. Putuskan yang bergerak.\n` +
       `👉 ${p.url}`,
@@ -279,20 +279,20 @@ const ID: Copy = {
     rows: [
       { pulse: 'SIGNAL', q: 'Apa yang menarik perhatianku?' },
       { pulse: 'TRUTH', q: 'Apa yang aku percaya?' },
-      { pulse: 'ORBIT', q: 'Di mana aku menjadi bagian?' },
+      { pulse: 'ORBIT', q: 'Di mana tempatku?' },
       { pulse: 'NUCLEUS', q: 'Apa yang aku putuskan?' },
     ],
     helps: ['Informasi bisa membantu.', 'Pengalaman bisa membantu.', 'AI bisa membantu.'],
-    center: 'Tapi tidak satu pun seharusnya menggantikan yang ada di pusatnya.',
+    center: 'Tapi tidak ada satu pun yang boleh menggantikan yang di tengah.',
     judgment: 'HUMAN JUDGMENT.',
   },
   final: {
-    lines: ['Temukan yang penting.', 'Putuskan yang bergerak.'],
+    lines: ['Temukan yang penting.', 'Putuskan yang menggerakkan.'],
     ours: 'Nilai kita. Budaya kita.',
     again: 'ULANG DARI AWAL',
     againLeft: (n: number) => `ULANG DARI AWAL  ·  sisa ${n}`,
     looping: 'Mulai lagi',
-    spent: 'Satu HP dapat tiga kali. Cukup untuk mengulang kalau ada yang salah, tidak cukup untuk memutar terus sampai jawabannya kamu suka.',
+    spent: 'Satu HP dapat tiga kali. Cukup untuk mengulang kalau ada yang salah, tapi tidak untuk memutar terus sampai dapat jawaban yang kamu suka.',
   },
 };
 
